@@ -1,0 +1,48 @@
+mainmodule reader {
+    readonly int numChares;
+    readonly size_t fileSize;
+    readonly std::string filename;
+    readonly size_t allocFloor;
+    readonly CProxy_Main mainProxy;
+    
+    mainchare Main {
+        entry Main(CkArgMsg *);
+	entry void run() {
+		     	 serial {
+			 	all_start = clock();
+			 	reader = CProxy_Reader::ckNew(numChares); 
+			 	std::string roundfile = filename;
+		     	 	CkPrintf("<Main> Reading %s (%jd bytes)\n", roundfile.c_str(), fileSize);
+
+				reader.readFile(roundfile);
+ 			}
+			 
+  	           	 when doneReduction(double doneTime),
+                	      maxReduction(double maxTime),
+			      minReduction(double minTime) {
+			      serial {
+			      	     all_stop = clock();
+				     double all_time = (double) (all_stop - all_start) / CLOCKS_PER_SEC * 1000;
+				     CkPrintf("Total time = %f ms\n", all_time);
+			      	     CkPrintf("Time spent in read (ms): min=%f, max=%f\n", minTime, maxTime);
+				     CkPrintf("All time using internal done time: %f\n", (doneTime - (double) all_start) / CLOCKS_PER_SEC * 1000);
+				     }
+			 }
+
+
+		      serial{
+
+		      	CkExit();
+		      }
+	}
+        entry[reductiontarget] void doneReduction(double doneTime);
+	entry[reductiontarget] void minReduction(double sumTime);
+	entry[reductiontarget] void maxReduction(double maxTime);
+
+    }
+    array[1D] Reader {
+        entry Reader();
+        entry void readFile(std::string filename);
+        
+    }
+}
