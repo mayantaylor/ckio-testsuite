@@ -8,12 +8,13 @@ mainmodule reader {
     mainchare Main {
         entry Main(CkArgMsg *);
 	entry void run() {
-		     	 serial {
+	      for (i=0; i < 10 ; i++) {
+	      	   	 serial {
 			 	all_start = clock();
 			 	reader = CProxy_Reader::ckNew(numChares); 
-			 	std::string roundfile = filename;
-		     	 	CkPrintf("<Main> Reading %s (%jd bytes)\n", roundfile.c_str(), fileSize);
-
+			 	std::string roundfile = filename + std::to_string(i);
+		
+				CkPrintf("<Main> Reading %s (%jd bytes)\n", roundfile.c_str(), fileSize);
 				reader.readFile(roundfile);
  			}
 			 
@@ -25,15 +26,21 @@ mainmodule reader {
 				     double all_time = (double) (all_stop - all_start) / CLOCKS_PER_SEC * 1000;
 				     CkPrintf("Total time = %f ms\n", all_time);
 			      	     CkPrintf("Time spent in read (ms): min=%f, max=%f\n", minTime, maxTime);
-				     CkPrintf("All time using internal done time: %f\n", (doneTime - (double) all_start) / CLOCKS_PER_SEC * 1000);
+				     CkPrintf("All time using internal done time: %f\n", (doneTime - (double) all_start) / CLOCKS_PER_SEC * 1000);				 avg_total += all_time;
+				     avg_min += minTime;
+				     avg_max += maxTime;
 				     }
 			 }
+		} 
 
+		serial{
+			avg_total = avg_total / 10;
+			avg_min = avg_min / 10;
+			avg_max = avg_max / 10;
 
-		      serial{
-
-		      	CkExit();
-		      }
+			CkPrintf("Average total, min, max: %f  %f  %f\n", avg_total, avg_min, avg_max);
+			CkExit();
+		}
 	}
         entry[reductiontarget] void doneReduction(double doneTime);
 	entry[reductiontarget] void minReduction(double sumTime);

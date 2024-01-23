@@ -23,7 +23,11 @@ class Main : public CBase_Main
   int i; 
   clock_t all_start;
   clock_t all_stop;
-     
+
+  double avg_total;
+  double avg_min;
+  double avg_max;
+  
 public:
     Main(CkArgMsg *msg)
     {
@@ -42,6 +46,9 @@ public:
         allocFloor = (size_t) (fileSize / (double)numChares);
         mainProxy = thisProxy;
 
+	avg_total = 0;
+	avg_min = 0;
+	avg_max = 0;
 	thisProxy.run();
 	
     }
@@ -68,6 +75,7 @@ public:
 	offset = (size_t) numOverflow * (allocFloor + 1) + (thisIndex - numOverflow) * allocFloor;
       }
 
+      CkPrintf("Chare %d on PE %d.\n", thisIndex, CkMyPe());
       // setup buffer to read to
       buffer = (char *)malloc(my_buffer_size);
       if (buffer == NULL)
