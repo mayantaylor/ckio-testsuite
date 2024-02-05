@@ -56,8 +56,6 @@ mainmodule iotest
           CkPrintf("Run throughput: %f MiB/sec\n", tp);
           totalTP += tp;
 
-          delete m;
-
           CkCallback cb(CkIndex_Main::sessionClosed(0), thisProxy);
           Ck::IO::closeReadSession(session, cb);	          
 	  
