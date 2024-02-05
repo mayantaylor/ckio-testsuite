@@ -31,7 +31,7 @@ mainmodule iotest
         when ready(Ck::IO::FileReadyMsg * m) serial
         {
           f = m->file;
-          CkPrintf("STAGE 2: Starting session\n");
+          //CkPrintf("STAGE 2: Starting session\n");
           CkCallback sessionStart(CkIndex_Main::start_read(0), thisProxy);
           Ck::IO::startReadSession(f, fileSize, 0, sessionStart);
 
@@ -39,7 +39,7 @@ mainmodule iotest
         }
         when start_read(Ck::IO::SessionReadyMsg * m) serial
         {
-          CkPrintf("STAGE 3: Starting read.\n");
+          //CkPrintf("STAGE 3: Starting read.\n");
           size_t sizeToRead = fileSize / n; // only works if fileSize is a multiple of n
           session = m->session;
           testers = CProxy_Test::ckNew(m->session, sizeToRead, n);
@@ -59,25 +59,28 @@ mainmodule iotest
           delete m;
 
           CkCallback cb(CkIndex_Main::sessionClosed(0), thisProxy);
-          Ck::IO::closeReadSession(session, cb);
-
+          Ck::IO::closeReadSession(session, cb);	          
+	  
           delete m;
         }
 
         when sessionClosed(CkReductionMsg * m)
-            serial
-        {
-          CkPrintf("STAGE 6: Session closed successfully. Cleaning up testers\n");
-          CkCallback closedCb(CkIndex_Main::closed(0), thisProxy);
-          Ck::IO::close(f, closedCb);
-          // testers.ckDestroy();
-          // delete m;
-          // delete m2;
+           serial
+       {
+          CkPrintf("STAGE 5: Session closed successfully. Cleaning up testers\n");
+	  CkCallback closedCb(CkIndex_Main::closed(0), thisProxy);
+	  CkPrintf("Created callback.\n");
+
+	  Ck::IO::close(f, closedCb);			    
+	  testers.ckDestroy();
+          delete m;
+	  
         }
         when closed(CkReductionMsg * m)
             serial
         {
-          CkPrintf("STAGE 7: Closed complete.\n");
+       	 delete m;
+          CkPrintf("STAGE 6: Closed complete.\n");
         }
       }
 
@@ -92,8 +95,6 @@ mainmodule iotest
     entry void start_read(Ck::IO::SessionReadyMsg * m);
     entry void test_read(CkReductionMsg * m);
     entry void closed(CkReductionMsg * m);
-
-    // entry void closed(CkReductionMsg *m);
     entry void sessionClosed(CkReductionMsg * m);
     entry void iterDone();
   };

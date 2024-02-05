@@ -26,7 +26,7 @@ public:
   Main(CkArgMsg *m)
   {
     numBufChares = atoi(m->argv[1]); // arg 1 = number of buffer chares
-    numBufRemaining = numBufChares;
+
     fileSize = atoi(m->argv[2]) * 1024 * 1024; // file size = arg 2
 
     n = atoi(m->argv[3]); // arg 3 = number of readers
@@ -51,8 +51,13 @@ class Test : public CBase_Test
 public:
   Test(Ck::IO::Session token, size_t bytesToRead)
   {
-    CkCallback sessionEnd(CkIndex_Test::readDone(0), thisProxy);
-    dataBuffer = (char *)malloc(bytesToRead);
+    CkCallback sessionEnd(CkIndex_Test::readDone(0), thisProxy[thisIndex]);
+    try{
+      dataBuffer = new char[bytesToRead];
+    } catch (const std::bad_alloc &e){
+      CkPrintf("ERROR: Data buffer malloc of %zu bytes in Test chare %d failed.\n", bytesToRead, thisIndex);
+      CkExit();
+    }
     Ck::IO::read(token, bytesToRead, bytesToRead * thisIndex, dataBuffer, sessionEnd);
   }
 
