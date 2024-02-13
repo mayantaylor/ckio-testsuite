@@ -1,5 +1,6 @@
 #include "iotest.decl.h"
 #include <vector>
+#include <time.h>
 
 CProxy_Main mainproxy;
 
@@ -17,8 +18,20 @@ class Main : public CBase_Main
   int i;
   int iters;
   double totalTP;
+  double avgTime;
+  double avg1;
+  double avg2;
+  double avg3;
+  
   double start_time;
+  clock_t start_time_clock;
+  clock_t stage3_start;
+  clock_t stage2_start;
 
+  double stage1_time;
+  double stage2_time;
+  double stage3_time;
+  
   int numBufChares;
   int numBufRemaining;
 
