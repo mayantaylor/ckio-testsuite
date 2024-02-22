@@ -6,10 +6,10 @@ HEADERS = $(MODULE).decl.h $(MODULE).def.h
 EXEC = $(MODULE)
 
 $(EXEC): $(CPP_FILE) $(HEADERS)
-	charmc -o $@ $< #-tracemode projections
+	charmc -o $@ $< 
 
 $(HEADERS): $(CI_FILE)
 	charmc $^
 
 clean:
-	rm -f charmrun $(HEADERS) $(EXEC) slurm-tools/reader-*.slurm
+	rm -f charmrun $(HEADERS) $(EXEC) slurm-tools/reader-*.slurm 

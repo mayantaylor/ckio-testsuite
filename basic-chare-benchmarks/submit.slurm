@@ -1,17 +1,19 @@
 #!/bin/bash
-#SBATCH --nodes=1
-#SBATCH --ntasks-per-node=1
+#SBATCH --nodes=8
+#SBATCH --ntasks-per-node=32
 #SBATCH --output=run.out
-#SBATCH --partition=cpu
-#SBATCH --account=mzu-delta-cpu
-#SBATCH --job-name=chare-bench
 #SBATCH --time=00:20:00      # hh:mm:ss for the job
-#SBATCH --constraint="scratch"
-#SBATCH --mem=2g
+#SBATCH --mem=20g
 
-chares=1
+
 size=1024
-./charmrun ./reader $((chares)) $((size)) /scratch/mzu/mtaylor2/testFile +p$((chares)) > results-1node-$((size))MB/$((chares))chare.out
+
+module load openmpi
+for test in 0;
+do
+    chares=2048
+    ./charmrun ./reader $((chares)) $((size)) /ocean/projects/asc050015p/mtaylor5/testFile$((test)) +p$((8 * 32)) > 8nodes-2048readers/$((chares))chares.out 
+done
 
 
 

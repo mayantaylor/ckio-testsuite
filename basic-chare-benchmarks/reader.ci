@@ -1,55 +1,67 @@
-mainmodule reader {
-    readonly int numChares;
-    readonly size_t fileSize;
-    readonly std::string filename;
-    readonly size_t allocFloor;
-    readonly CProxy_Main mainProxy;
-    
-    mainchare Main {
-        entry Main(CkArgMsg *);
-	entry void run() {
-	      for (i=0; i < 10 ; i++) {
-	      	   	 serial {
-			 	all_start = clock();
-			 	reader = CProxy_Reader::ckNew(numChares); 
-			 	std::string roundfile = filename + std::to_string(i);
-		
-				CkPrintf("<Main> Reading %s (%jd bytes)\n", roundfile.c_str(), fileSize);
-				reader.readFile(roundfile);
- 			}
-			 
-  	           	 when doneReduction(double doneTime),
-                	      maxReduction(double maxTime),
-			      minReduction(double minTime) {
-			      serial {
-			      	     all_stop = clock();
-				     double all_time = (double) (all_stop - all_start) / CLOCKS_PER_SEC * 1000;
-				     CkPrintf("Total time = %f ms\n", all_time);
-			      	     CkPrintf("Time spent in read (ms): min=%f, max=%f\n", minTime, maxTime);
-				     CkPrintf("All time using internal done time: %f\n", (doneTime - (double) all_start) / CLOCKS_PER_SEC * 1000);				 avg_total += all_time;
-				     avg_min += minTime;
-				     avg_max += maxTime;
-				     }
-			 }
-		} 
+mainmodule reader
+{
+	readonly int numChares;
+	readonly size_t fileSize;
+	readonly std::string filename;
+	readonly size_t allocFloor;
+	readonly CProxy_Main mainProxy;
 
-		serial{
-			avg_total = avg_total / 10;
-			avg_min = avg_min / 10;
-			avg_max = avg_max / 10;
+	mainchare Main
+	{
+		entry Main(CkArgMsg *);
+		entry void run()
+		{
+			for (i = 0; i < 10; i++)
+			{
+				serial
+				{
+					CkPrintf("-------ROUND %d-------\n", i);
 
-			CkPrintf("Average total, min, max: %f  %f  %f\n", avg_total, avg_min, avg_max);
-			CkExit();
+					reader = CProxy_Reader::ckNew(numChares);
+					std::string roundfile = filename + std::to_string(i);
+
+					CkPrintf("<Main> Starting timer and reading %s (%jd bytes)\n", roundfile.c_str(), fileSize);
+
+					all_start = CkWallTimer();
+					reader.readFile(roundfile);
+				}
+
+				when maxReduction(double maxTime),
+					minReduction(double minTime)
+				{
+					serial
+					{
+						double all_stop = CkWallTimer();
+						double total = all_stop - all_start;
+						CkPrintf("Total time = %fs\n", total);
+						all_time[i] = total; // record time in array for final summary
+					}
+				}
+			}
+
+			serial
+			{
+				CkPrintf("-----SUMMARY------\n");
+				CkPrintf("Times: [%f", all_time[0]);
+				double sum = all_time[0];
+				for (int i = 1; i < 10; i++)
+				{
+					CkPrintf(", %f", all_time[i]);
+					sum += all_time[i];
+				}
+				CkPrintf("]\n");
+
+				CkPrintf("Average total time: %f ms\n", sum / 10);
+
+				CkExit();
+			}
 		}
+		entry[reductiontarget] void minReduction(double sumTime);
+		entry[reductiontarget] void maxReduction(double maxTime);
 	}
-        entry[reductiontarget] void doneReduction(double doneTime);
-	entry[reductiontarget] void minReduction(double sumTime);
-	entry[reductiontarget] void maxReduction(double maxTime);
-
-    }
-    array[1D] Reader {
-        entry Reader();
-        entry void readFile(std::string filename);
-        
-    }
+	array[1D] Reader
+	{
+		entry Reader();
+		entry void readFile(std::string filename);
+	}
 }
