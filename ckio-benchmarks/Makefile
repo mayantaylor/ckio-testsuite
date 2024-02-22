@@ -6,7 +6,7 @@ HEADERS = $(MODULE).decl.h $(MODULE).def.h
 EXEC = $(MODULE)
 
 $(EXEC): $(CPP_FILE) $(HEADERS)
-	charmc -o $@ $< -module CkIO
+	charmc -o $@ $< -module CkIO #-tracemode projections # -tracemode summary
 
 $(HEADERS): $(CI_FILE)
 	charmc $^

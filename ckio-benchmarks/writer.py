@@ -8,7 +8,7 @@ filename = sys.argv[1]
 filesize = int(float(sys.argv[2]) * MB)
 
 # Create 4KB of data
-data = bytearray.fromhex('abcd') * 2048
+data = b"a" * 2048
 
 print(f'Writing file {filename} of size {filesize / (1024*1024*1024)}GB with data {data[0:2]}')
 with open(filename, 'wb') as f:

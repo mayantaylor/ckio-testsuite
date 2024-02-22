@@ -20,25 +20,26 @@ mainmodule iotest
 
           CkCallback opened(CkIndex_Main::ready(NULL), thisProxy);
 
+          std::string roundfile = filename + std::to_string(i);
           char name[50];
-          snprintf(name, sizeof(name), "/ocean/projects/asc050015p/mtaylor5/testFile%d", i);
+          // convert filename to char array name
+          strcpy(name, roundfile.c_str());
 
-          CkPrintf("STAGE 1: Starting timers and opening file: %s\n", name);
+          CkPrintf("Starting timers and opening file: %s\n", name);
 
-	  start_time = CkWallTimer();
-	  start_time_clock = clock();
+          start_time = CkWallTimer();
           Ck::IO::open(name, opened, opts);
         }
         when ready(Ck::IO::FileReadyMsg * m) serial
         {
           f = m->file;
 
-	  stage1_time = double(clock() - start_time_clock) / CLOCKS_PER_SEC * 1000;
+          // stage1_time = double(clock() - start_time_clock) / CLOCKS_PER_SEC * 1000;
 
-	  //CkPrintf("STAGE 1: Finished in %fms\n", stage1_time);
-          //CkPrintf("STAGE 2: Starting session\n");
+          // CkPrintf("STAGE 1: Finished in %fms\n", stage1_time);
+          // CkPrintf("STAGE 2: Starting session\n");
 
-	  stage2_start = clock();
+          // stage2_start = clock();
 
           CkCallback sessionStart(CkIndex_Main::start_read(0), thisProxy);
           Ck::IO::startReadSession(f, fileSize, 0, sessionStart);
@@ -47,13 +48,13 @@ mainmodule iotest
         }
         when start_read(Ck::IO::SessionReadyMsg * m) serial
         {
-          clock_t stage2_end = clock();
-	  stage2_time = ((double(stage2_end - stage2_start) / CLOCKS_PER_SEC * 1000));
+          // clock_t stage2_end = clock();
+          // stage2_time = ((double(stage2_end - stage2_start) / CLOCKS_PER_SEC * 1000));
 
-	  //CkPrintf("STAGE 2: Finished in %fms\n", stage2_time); 
-          //CkPrintf("STAGE 3: Starting read.\n");
+          // CkPrintf("STAGE 2: Finished in %fms\n", stage2_time);
+          // CkPrintf("STAGE 3: Starting read.\n");
 
-	  stage3_start = clock();
+          // stage3_start = clock();
           size_t sizeToRead = fileSize / n; // only works if fileSize is a multiple of n
           session = m->session;
           testers = CProxy_Test::ckNew(m->session, sizeToRead, n);
@@ -63,64 +64,62 @@ mainmodule iotest
 
         when test_read(CkReductionMsg * m) serial
         {
-          double end_time = CkWallTimer() - start_time;
-	  clock_t end_time_clock = clock();
+          // clock_t end_time_clock = clock();
 
-	  clock_t stage3_end = clock();
+          // clock_t stage3_end = clock();
 
-	  stage3_time = ((double(stage3_end - stage3_start) / CLOCKS_PER_SEC * 1000));
+          // stage3_time = ((double(stage3_end - stage3_start) / CLOCKS_PER_SEC * 1000));
 
-	  //CkPrintf("STAGE 3: Finished in %fms\n", stage3_time);
-	  
-	  double tp = fileSize / ((double(end_time_clock - start_time_clock) / CLOCKS_PER_SEC * 1000)) / (1024 * 1024);
-	  
-          CkPrintf("STAGE 4: Summarizing read and closing file.\n");
+          // CkPrintf("STAGE 3: Finished in %fms\n", stage3_time);
 
-	  double totalTime = (double(end_time_clock - start_time_clock) / CLOCKS_PER_SEC * 1000);
+          // double tp = fileSize / ((double(end_time - start_time) / CLOCKS_PER_SEC * 1000)) / (1024 * 1024);
+
+          // CkPrintf("STAGE 4: Summarizing read and closing file.\n");
+
+          double totalTime = CkWallTimer() - start_time;
           CkPrintf("Total time = %fms\n", totalTime);
-          CkPrintf("Total throughput: %f MiB/sec\n", tp);
-	  CkPrintf("Stage1 = %f ms, Stage2 = %f ms, Stage3 = %f ms\n", stage1_time, stage2_time, stage3_time);
+          //  CkPrintf("Stage1 = %f ms, Stage2 = %f ms, Stage3 = %f ms\n", stage1_time, stage2_time, stage3_time);
 
-	  totalTP += tp;
-	  avgTime += totalTime;
-	  avg1 += stage1_time;
-	  avg2 += stage2_time;
-	  avg3 += stage3_time;
+          allTimes[i] = totalTime;
 
           CkCallback cb(CkIndex_Main::sessionClosed(0), thisProxy);
-          Ck::IO::closeReadSession(session, cb);	          
-	  
+          Ck::IO::closeReadSession(session, cb);
+
           delete m;
         }
 
         when sessionClosed(CkReductionMsg * m)
-           serial
-       {
-          //CkPrintf("STAGE 5: Session closed successfully. Cleaning up testers\n");
-	  CkCallback closedCb(CkIndex_Main::closed(0), thisProxy);
+            serial
+        {
+          // CkPrintf("STAGE 5: Session closed successfully. Cleaning up testers\n");
+          CkCallback closedCb(CkIndex_Main::closed(0), thisProxy);
 
-	  Ck::IO::close(f, closedCb);			    
-	  testers.ckDestroy();
+          Ck::IO::close(f, closedCb);
+          testers.ckDestroy();
           delete m;
-	  
         }
         when closed(CkReductionMsg * m)
             serial
         {
-       	 delete m;
-          CkPrintf("STAGE 6: Closed complete.\n");
+          delete m;
+          // CkPrintf("STAGE 6: Closed complete.\n");
         }
       }
 
       serial
       {
         CkPrintf("-----SUMMARY------\n");
-        CkPrintf("Average throughput: %f MiB/sec\n", totalTP / iters);
-	CkPrintf("Average total time: %f ms\n", avgTime / iters);
-	CkPrintf("Average stage1 time: %f ms\n", avg1 / iters);
-	CkPrintf("Average stage2 time: %f ms\n", avg2 / iters);
-	CkPrintf("Average stage3 time: %f ms\n", avg3 / iters);
-	
+        CkPrintf("Times: [%f", allTimes[0]);
+        double sum = allTimes[0];
+        for (int i = 1; i < iters; i++)
+        {
+          CkPrintf(", %f", allTimes[i]);
+          sum += allTimes[i];
+        }
+        CkPrintf("]\n");
+
+        CkPrintf("Average total time: %f ms\n", sum / iters);
+
         CkExit();
       }
     };
