@@ -3,13 +3,15 @@
 #include <time.h>
 #include <assert.h>
 #include <iostream>
+
+// MACRO TO RUN BG WORK CONCURRENTLY
+#undef BG
 CProxy_Main mainproxy;
 
 class Main : public CBase_Main
 {
-  Main_SDAG_CODE
-
-      CProxy_Test testers;
+  Main_SDAG_CODE CProxy_Test testers;
+  CProxy_Background bg;
   int n;
 
   Ck::IO::Session session;
@@ -19,36 +21,25 @@ class Main : public CBase_Main
   int i;
   int iters;
   double allTimes[10];
-  double avgTime;
-  double avg1;
-  double avg2;
-  double avg3;
+  double bgTimes[10];
 
   double start_time;
-  // clock_t start_time_clock;
-  // clock_t stage3_start;
-  // clock_t stage2_start;
-
-  // double stage1_time;
-  // double stage2_time;
-  // double stage3_time;
 
   int numBufChares;
   int numBufRemaining;
+
   std::string filename;
 
 public:
   Main(CkArgMsg *m)
   {
-    numBufChares = atoi(m->argv[1]); // arg 1 = number of buffer chares
+    numBufChares = atoi(m->argv[1]);                   // arg 1 = number of buffer chares
+    fileSize = (size_t)atoi(m->argv[2]) * 1024 * 1024; // file size = arg 2
 
-    fileSize = atoi(m->argv[2]) * 1024 * 1024; // file size = arg 2
-
-    n = atoi(m->argv[3]); // arg 3 = number of readers
-
+    n = atoi(m->argv[3]);     // arg 3 = number of readers
     iters = atoi(m->argv[4]); // arg 4 = number of test iterations
 
-    std::string fn(m->argv[5]);
+    std::string fn(m->argv[5]); // arg 5 = filename
     filename = fn;
 
     mainproxy = thisProxy;
@@ -62,10 +53,48 @@ public:
   }
 };
 
+class Background : public CBase_Background
+{
+private:
+  bool workDone;
+
+public:
+  Background()
+  {
+    workDone = false;
+    thisProxy[thisIndex].dummyBackgroundWork();
+  }
+  void setWorkDone()
+  {
+    workDone = true;
+  }
+
+  void dummyBackgroundWork() // threaded entry method
+  {
+    int dummyCounter = 10;
+    double totalTime = 0;
+    // do some dummy work
+    while (!workDone)
+    {
+      double start = CkWallTimer();
+      // inner loop approx 10 microseconds
+      while (CkWallTimer() - start < 1 * 1e-3)
+        ;
+      totalTime += CkWallTimer() - start;
+      CthYield();
+    }
+#ifdef BG
+    CkCallback done(CkReductionTarget(Main, bgDone), mainproxy);
+    contribute(sizeof(double), &totalTime, CkReduction::sum_double, done);
+#endif
+  }
+};
+
 class Test : public CBase_Test
 {
   char *dataBuffer;
   int size;
+  bool workDone = false;
 
 public:
   Test(Ck::IO::Session token, size_t bytesToRead)

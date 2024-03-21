@@ -1,17 +1,13 @@
 #!/bin/bash
 #SBATCH --nodes=4
-#SBATCH --ntasks-per-node=64
-#SBATCH --output=run.out
-#SBATCH --partition=cpu
-#SBATCH --account=mzu-delta-cpu
-#SBATCH --job-name=chare-bench
+#SBATCH --ntasks-per-node=32
+#SBATCH --output=run-4nodes-128tasks.out
 #SBATCH --time=00:20:00      # hh:mm:ss for the job
-#SBATCH --constraint="scratch"
-#SBATCH --mem=16g
+#SBATCH --mem=20g
 
-tasks=64
+tasks=128
 size=1024
-srun --nodes=4 --ntasks-per-node=$((tasks)) ./main $((size)) /scratch/mzu/mtaylor2/testFile0
+mpirun -np $((tasks)) ./main $((size)) /ocean/projects/asc050015p/mtaylor5/testFile0
 
 
 
