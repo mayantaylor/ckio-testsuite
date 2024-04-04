@@ -41,17 +41,15 @@ mainmodule reader
 
 			serial
 			{
-				CkPrintf("-----SUMMARY------\n");
-				CkPrintf("Times: [%f", all_time[0]);
-				double sum = all_time[0];
-				for (int i = 1; i < 10; i++)
-				{
-					CkPrintf(", %f", all_time[i]);
-					sum += all_time[i];
-				}
-				CkPrintf("]\n");
 
-				CkPrintf("Average total time: %f ms\n", sum / 10);
+				CkPrintf("-----SUMMARY DATA------\n");
+				CkPrintf("%d", numChares);
+				for (int i = 0; i < 10; i++)
+				{
+					CkPrintf(" %f", all_time[i]);
+				}
+				CkPrintf("\n");
+				CkPrintf("-----END SUMMARY------\n");
 
 				CkExit();
 			}
