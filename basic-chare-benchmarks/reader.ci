@@ -9,7 +9,7 @@ mainmodule reader
 	mainchare Main
 	{
 		entry Main(CkArgMsg *);
-		entry void run()
+		entry[threaded] void run()
 		{
 			for (i = 0; i < 10; i++)
 			{
@@ -43,12 +43,10 @@ mainmodule reader
 			{
 
 				CkPrintf("-----SUMMARY DATA------\n");
-				CkPrintf("%d", numChares);
 				for (int i = 0; i < 10; i++)
 				{
-					CkPrintf(" %f", all_time[i]);
+					CkPrintf("%d %d %f\n", CkNumPes(), numChares, all_time[i]);
 				}
-				CkPrintf("\n");
 				CkPrintf("-----END SUMMARY------\n");
 
 				CkExit();
