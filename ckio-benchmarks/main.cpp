@@ -5,7 +5,7 @@
 #include <iostream>
 
 // MACRO TO RUN BG WORK CONCURRENTLY
-#undef BG
+#define BG
 CProxy_Main mainproxy;
 
 class Main : public CBase_Main

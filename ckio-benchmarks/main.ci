@@ -1,5 +1,5 @@
 // MACRO TO RUN BG WORK CONCURRENTLY
-#undef BG
+#define BG
 
 mainmodule iotest
 {
@@ -133,14 +133,26 @@ mainmodule iotest
         }
         CkPrintf("]\n");
         CkPrintf("Average bg percentage: %f \%\n", bgsum / iters);
-#endif
+
+        CkPrintf("-----SUMMARY DATA------\n");
+        // CkPrintf("%f %f %f\n", sum / iters, bgtimesum / iters, bgsum / iters);
+
+        // summary data: number clients, number BG, background time, totalTime (in sec)
+
+        for (int i = 0; i < iters; i++)
+        {
+          CkPrintf("%d %d %f %f\n", n, numBufChares, bgTimes[i], allTimes[i]);
+        }
+
+        CkPrintf("-----END SUMMARY------\n");
+#else
 
         // summary data formatted as total time, bg time, bg percentage
         CkPrintf("-----SUMMARY DATA------\n");
         // CkPrintf("%f %f %f\n", sum / iters, bgtimesum / iters, bgsum / iters);
 
         // summary data: average, time for each run
-        CkPrintf("%d", numBufChares);
+        CkPrintf("%d %d", n, numBufChares);
         for (int i = 0; i < iters; i++)
         {
           CkPrintf(" %f", allTimes[i]);
@@ -148,6 +160,7 @@ mainmodule iotest
         CkPrintf("\n");
 
         CkPrintf("-----END SUMMARY------\n");
+#endif
 
         CkExit();
       }
