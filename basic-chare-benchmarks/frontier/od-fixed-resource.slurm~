@@ -1,0 +1,61 @@
+#!/bin/bash
+#SBATCH -A bip249
+#SBATCH --nodes=16
+#SBATCH --ntasks-per-node=32
+#SBATCH --output=run.out
+#SBATCH --time=00:20:00      # hh:mm:ss for the job
+
+
+
+nConfigs=9
+nTests=9
+dir="frontier/results"
+
+size=4096
+confFile=odfr$((SLURM_JOB_NUM_NODES))nodes$((SLURM_NTASKS))tasks$((size))MB
+
+for conf in $(seq 0 $nConfigs);
+do
+    nReaders=$((2 ** $(($conf + 3))))
+
+    for test in $(seq 0 $nTests);
+    do
+	srun -N $SLURM_JOB_NUM_NODES --ntasks=$SLURM_NTASKS ./reader $((nReaders)) $((size)) $TESTFILE_DIR/testfile_$((conf))_$((test)).txt > $dir/$((nReaders)).out;
+	sed -n '/-----SUMMARY DATA------/,/-----END SUMMARY------/p' $dir/$((nReaders)).out | sed '1d;$d' >> $dir/$confFile.out;
+	rm $dir/$((nReaders)).out
+    done
+done
+
+size=512
+confFile=odfr$((SLURM_JOB_NUM_NODES))nodes$((SLURM_NTASKS))tasks$((size))MB
+
+for conf in $(seq 0 $nConfigs);
+do
+    nReaders=$((2 ** $(($conf + 3))))
+
+    for test in $(seq 0 $nTests);
+    do
+	srun -N $SLURM_JOB_NUM_NODES --ntasks=$SLURM_NTASKS ./reader $((nReaders)) $((size)) $TESTFILE_DIR/testfile_$((conf))_$((test)).txt > $dir/$((nReaders)).out;
+	sed -n '/-----SUMMARY DATA------/,/-----END SUMMARY------/p' $dir/$((nReaders)).out | sed '1d;$d' >> $dir/$confFile.out;
+	rm $dir/$((nReaders)).out
+    done
+done
+
+size=16
+confFile=odfr$((SLURM_JOB_NUM_NODES))nodes$((SLURM_NTASKS))tasks$((size))MB
+
+for conf in $(seq 0 $nConfigs);
+do
+    nReaders=$((2 ** $(($conf + 3))))
+
+    for test in $(seq 0 $nTests);
+    do
+	srun -N $SLURM_JOB_NUM_NODES --ntasks=$SLURM_NTASKS ./reader $((nReaders)) $((size)) $TESTFILE_DIR/testfile_$((conf))_$((test)).txt > $dir/$((nReaders)).out;
+	sed -n '/-----SUMMARY DATA------/,/-----END SUMMARY------/p' $dir/$((nReaders)).out | sed '1d;$d' >> $dir/$confFile.out;
+	rm $dir/$((nReaders)).out
+    done
+done
+
+
+
+
