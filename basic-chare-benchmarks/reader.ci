@@ -9,47 +9,37 @@ mainmodule reader
 	mainchare Main
 	{
 		entry Main(CkArgMsg *);
-		entry[threaded] void run()
+		entry void run()
 		{
-			for (i = 0; i < 10; i++)
-			{
-				serial
-				{
-					CkPrintf("-------ROUND %d-------\n", i);
-
-					reader = CProxy_Reader::ckNew(numChares);
-					std::string roundfile = filename + std::to_string(i);
-
-					CkPrintf("<Main> Starting timer and reading %s (%jd bytes)\n", roundfile.c_str(), fileSize);
-
-					all_start = CkWallTimer();
-					reader.readFile(roundfile);
-				}
-
-				when maxReduction(double maxTime),
-					minReduction(double minTime)
-				{
-					serial
-					{
-						double all_stop = CkWallTimer();
-						double total = all_stop - all_start;
-						CkPrintf("Total time = %fs\n", total);
-						all_time[i] = total; // record time in array for final summary
-					}
-				}
-			}
 
 			serial
 			{
 
-				CkPrintf("-----SUMMARY DATA------\n");
-				for (int i = 0; i < 10; i++)
-				{
-					CkPrintf("%d %d %f\n", CkNumPes(), numChares, all_time[i]);
-				}
-				CkPrintf("-----END SUMMARY------\n");
+				reader = CProxy_Reader::ckNew(numChares);
+				std::string roundfile = filename;
 
-				CkExit();
+				CkPrintf("<Main> Starting timer and reading %s (%jd bytes)\n", roundfile.c_str(), fileSize);
+
+				all_start = CkWallTimer();
+				reader.readFile(roundfile);
+			}
+
+			when maxReduction(double maxTime),
+				minReduction(double minTime)
+			{
+				serial
+				{
+					double all_stop = CkWallTimer();
+					double total = all_stop - all_start;
+					CkPrintf("Total time = %fs\n", total);
+					all_time = total; // record time in array for final summary
+
+					CkPrintf("-----SUMMARY DATA------\n");
+					CkPrintf("%d %d %f\n", CkNumPes(), numChares, all_time);
+					CkPrintf("-----END SUMMARY------\n");
+
+					CkExit();
+				}
 			}
 		}
 		entry[reductiontarget] void minReduction(double sumTime);

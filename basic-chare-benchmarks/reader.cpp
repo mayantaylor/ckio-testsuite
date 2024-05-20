@@ -22,7 +22,7 @@ class Main : public CBase_Main
   int i;
 
   double all_start;
-  double all_time[10];
+  double all_time;
 
 public:
   Main(CkArgMsg *msg)
