@@ -4,29 +4,25 @@
 #include <assert.h>
 #include <iostream>
 
-// MACRO TO RUN BG WORK CONCURRENTLY
-#define BG
 CProxy_Main mainproxy;
 
 class Main : public CBase_Main
 {
   Main_SDAG_CODE CProxy_Test testers;
   CProxy_Background bg;
+
   int n;
 
   Ck::IO::Session session;
   Ck::IO::File f;
 
   size_t fileSize;
-  int i;
-  int iters;
-  double allTimes[10];
-  double bgTimes[10];
+  double totalTime;
+  double bgTime;
 
   double start_time;
-
   int numBufChares;
-  int numBufRemaining;
+  int doBG;
 
   std::string filename;
 
@@ -35,13 +31,13 @@ public:
   {
     numBufChares = atoi(m->argv[1]);                   // arg 1 = number of buffer chares
     fileSize = (size_t)atoi(m->argv[2]) * 1024 * 1024; // file size = arg 2
+    n = atoi(m->argv[3]);                              // arg 3 = number of readers
+    std::string fn(m->argv[4]);                        // arg 4 = filename
+    doBG = atoi(m->argv[5]);                           // arg 5 = boolean to run background work
 
-    n = atoi(m->argv[3]);     // arg 3 = number of readers
-    iters = atoi(m->argv[4]); // arg 4 = number of test iterations
-
-    std::string fn(m->argv[5]); // arg 5 = filename
     filename = fn;
 
+    CkPrintf("done parsing args, starting prog\n");
     mainproxy = thisProxy;
     thisProxy.run(); // open files
     delete m;
@@ -83,10 +79,9 @@ public:
       totalTime += CkWallTimer() - start;
       CthYield();
     }
-#ifdef BG
+
     CkCallback done(CkReductionTarget(Main, bgDone), mainproxy);
     contribute(sizeof(double), &totalTime, CkReduction::sum_double, done);
-#endif
   }
 };
 

@@ -1,5 +1,3 @@
-// MACRO TO RUN BG WORK CONCURRENTLY
-#define BG
 
 mainmodule iotest
 {
@@ -11,157 +9,88 @@ mainmodule iotest
     entry void ready(Ck::IO::FileReadyMsg * m);
     entry void run()
     {
-      // iterate test and average results over "iters" rounds
-      for (i = 0; i < iters; i++)
-      {
-        serial
-        {
-          CkPrintf("-------ROUND %d-------\n", i);
-
-          Ck::IO::Options opts;
-          opts.numReaders = numBufChares;
-
-          CkCallback opened(CkIndex_Main::ready(NULL), thisProxy);
-
-          std::string roundfile = filename + std::to_string(i);
-          char name[50];
-
-          // convert filename to char array name
-          strcpy(name, roundfile.c_str());
-
-          CkPrintf("Starting timers and opening file: %s\n", name);
-          start_time = CkWallTimer();
-          Ck::IO::open(name, opened, opts);
-        };
-        when ready(Ck::IO::FileReadyMsg * m) serial
-        {
-          f = m->file;
-
-#ifdef BG
-          bg = CProxy_Background::ckNew();
-#endif
-
-          CkCallback sessionStart(CkIndex_Main::start_read(0), thisProxy);
-          Ck::IO::startReadSession(f, fileSize, 0, sessionStart);
-
-          delete m;
-        }
-        when start_read(Ck::IO::SessionReadyMsg * m) serial
-        {
-
-          size_t sizeToRead = fileSize / n; // only works if fileSize is a multiple of n
-          session = m->session;
-          testers = CProxy_Test::ckNew(m->session, sizeToRead, n);
-
-          delete m;
-        }
-
-        when test_read(CkReductionMsg * m) serial
-        {
-
-          double totalTime = CkWallTimer() - start_time;
-          CkPrintf("Total time = %f sec\n", totalTime);
-
-          allTimes[i] = totalTime;
-
-          CkCallback cb(CkIndex_Main::sessionClosed(0), thisProxy);
-          Ck::IO::closeReadSession(session, cb);
-
-#ifdef BG
-          bg.setWorkDone();
-#endif
-          delete m;
-        }
-
-        when sessionClosed(CkReductionMsg * m)
-            serial
-        {
-          CkCallback closedCb(CkIndex_Main::closed(0), thisProxy);
-
-          Ck::IO::close(f, closedCb);
-          testers.ckDestroy();
-          delete m;
-        }
-        when closed(CkReductionMsg * m)
-            serial
-        {
-          delete m;
-        };
-#ifdef BG
-        when bgDone(double bgTime)
-        {
-          serial
-          {
-            bgTimes[i] = bgTime / CkNumPes();
-          }
-        }
-#endif
-      }
-
       serial
       {
-        CkPrintf("-----SUMMARY------\n");
+        Ck::IO::Options opts;
+        opts.numReaders = numBufChares;
 
-        // print overall times
-        CkPrintf("Times: [%f", allTimes[0]);
-        double sum = allTimes[0];
-        for (int i = 1; i < iters; i++)
-        {
-          CkPrintf(", %f", allTimes[i]);
-          sum += allTimes[i];
-        }
-        CkPrintf("]\n");
+        CkCallback opened(CkIndex_Main::ready(NULL), thisProxy);
 
-#ifdef BG
-        // print bg work times
-        CkPrintf("Bg Times: [%f", bgTimes[0]);
-        double bgtimesum = bgTimes[0];
-        for (int i = 1; i < iters; i++)
-        {
-          CkPrintf(", %f", bgTimes[i]);
-          bgtimesum += bgTimes[i];
-        }
-        CkPrintf("]\n");
+        char name[50];
 
-        // print bg work percentages
-        CkPrintf("Bg Percentages: [%f \%", bgTimes[0] / allTimes[0] * 100);
-        double bgsum = bgTimes[0] / allTimes[0] * 100;
-        for (int i = 1; i < iters; i++)
+        // convert filename to char array name
+        strcpy(name, filename.c_str());
+
+        CkPrintf("Starting timers and opening file: %s\n", name);
+        start_time = CkWallTimer();
+        Ck::IO::open(name, opened, opts);
+      };
+      when ready(Ck::IO::FileReadyMsg * m) serial
+      {
+        f = m->file;
+
+        if (doBG)
         {
-          CkPrintf(", %f", bgTimes[i] / allTimes[i] * 100);
-          bgsum += bgTimes[i] / allTimes[i] * 100;
+          bg = CProxy_Background::ckNew();
         }
-        CkPrintf("]\n");
-        CkPrintf("Average bg percentage: %f \%\n", bgsum / iters);
+
+        CkCallback sessionStart(CkIndex_Main::start_read(0), thisProxy);
+        Ck::IO::startReadSession(f, fileSize, 0, sessionStart);
+
+        delete m;
+      }
+      when start_read(Ck::IO::SessionReadyMsg * m) serial
+      {
+        size_t sizeToRead = fileSize / n; // only works if fileSize is a multiple of n
+        session = m->session;
+        testers = CProxy_Test::ckNew(m->session, sizeToRead, n);
+
+        delete m;
+      }
+
+      when test_read(CkReductionMsg * m) serial
+      {
+
+        totalTime = CkWallTimer() - start_time;
+        CkCallback cb(CkIndex_Main::sessionClosed(0), thisProxy);
+        Ck::IO::closeReadSession(session, cb);
+
+        if (doBG)
+        {
+          bg.setWorkDone();
+        }
+
+        delete m;
+      }
+
+      when sessionClosed(CkReductionMsg * m)
+          serial
+      {
+        CkCallback closedCb(CkIndex_Main::closed(0), thisProxy);
+
+        Ck::IO::close(f, closedCb);
+        testers.ckDestroy();
+        delete m;
+      }
+      when closed(CkReductionMsg * m)
+          serial
+      {
+        delete m;
+
+        if (!doBG)
+        {
+          thisProxy.bgDone(0);
+        }
+      }
+
+      when bgDone(double time)
+          serial
+      {
+        bgTime = time;
 
         CkPrintf("-----SUMMARY DATA------\n");
-        // CkPrintf("%f %f %f\n", sum / iters, bgtimesum / iters, bgsum / iters);
-
-        // summary data: number clients, number BG, background time, totalTime (in sec)
-
-        for (int i = 0; i < iters; i++)
-        {
-          CkPrintf("%d %d %f %f\n", n, numBufChares, bgTimes[i], allTimes[i]);
-        }
-
+        CkPrintf("%d %d %d %llu %f %f\n", n, numBufChares, CkNumPes(), fileSize, bgTime, totalTime);
         CkPrintf("-----END SUMMARY------\n");
-#else
-
-        // summary data formatted as total time, bg time, bg percentage
-        CkPrintf("-----SUMMARY DATA------\n");
-        // CkPrintf("%f %f %f\n", sum / iters, bgtimesum / iters, bgsum / iters);
-
-        // summary data: average, time for each run
-        CkPrintf("%d %d", n, numBufChares);
-        for (int i = 0; i < iters; i++)
-        {
-          CkPrintf(" %f", allTimes[i]);
-        }
-        CkPrintf("\n");
-
-        CkPrintf("-----END SUMMARY------\n");
-#endif
-
         CkExit();
       }
     };
@@ -170,9 +99,7 @@ mainmodule iotest
     entry void closed(CkReductionMsg * m);
     entry void sessionClosed(CkReductionMsg * m);
     entry void iterDone();
-#ifdef BG
     entry[reductiontarget] void bgDone(double time);
-#endif
   };
 
   array[1D] Test
