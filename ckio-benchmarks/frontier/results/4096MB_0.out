@@ -1,0 +1,303 @@
+Charm++> Running on MPI library: MPI VERSION    : CRAY MPICH version 8.1.23.14 (ANL base 3.4a2)
+MPI BUILD INFO : Tue Nov 29 13:05 2022 (git hash 210ae8b)
+ (MPI standard: 3.1)
+Charm++> Level of thread support used: MPI_THREAD_SINGLE (desired: MPI_THREAD_SINGLE)
+Charm++> Running in non-SMP mode: 32 processes (PEs)
+Converse/Charm++ Commit ID: v7.1.0-devel-351-gede740a45
+Charm++> MPI timer is synchronized
+Isomalloc> Synchronized global address space.
+CharmLB> Load balancer assumes all CPUs are same.
+Charm++> Running on 1 hosts (1 sockets x 56 cores x 2 PUs = 112-way SMP)
+Charm++> cpu topology info is gathered in 0.009 seconds.
+CharmLB> Load balancing instrumentation for communication is off.
+done parsing args, starting prog
+Starting timers and opening file: /lustre/orion/bip249/scratch/mayat4//testfile_4_0.txt
+[0] Stack Traceback:
+  [0:0] main 0x6d5187 
+  [0:1] libpthread.so.0 0x7fffed839910 
+  [0:2] libc.so.6 0x7fffea053d2b gsignal
+  [0:3] libc.so.6 0x7fffea0553e5 abort
+  [0:4] libc.so.6 0x7fffea04bc6a 
+  [0:5] libc.so.6 0x7fffea04bcf2 
+  [0:6] main 0x541078 Test::readDone(Ck::IO::ReadCompleteMsg*)
+  [0:7] main 0x53ba67 CkIndex_Test::_call_readDone_ReadCompleteMsg(void*, void*)
+  [0:8] main 0x58d95a CkDeliverMessageFree
+  [0:9] main 0x5cf6ed CkLocRec::invokeEntry(CkMigratable*, void*, int, bool)
+  [0:10] main 0x593846 _processHandler(void*, CkCoreState*)
+  [0:11] main 0x6a54ee CsdScheduleForever
+  [0:12] main 0x6a5785 CsdScheduler
+  [0:13] main 0x6d50ba ConverseInit
+  [0:14] main 0x62626c charm_main
+  [0:15] libc.so.6 0x7fffea03e24d __libc_start_main
+  [0:16] main 0x536d3a _start
+[1] Stack Traceback:
+[2] Stack Traceback:
+[3] Stack Traceback:
+[4] Stack Traceback:
+[5] Stack Traceback:
+[6] Stack Traceback:
+[7] Stack Traceback:
+[8] Stack Traceback:
+[9] Stack Traceback:
+[10] Stack Traceback:
+[11] Stack Traceback:
+  [1:0] main 0x6d5187 
+  [1:1] libpthread.so.0 0x7fffed839910 
+  [1:2] linux-vdso.so.1 0x7fffed9d7858 clock_gettime
+  [2:0] main 0x6d5187 
+  [2:1] libpthread.so.0 0x7fffed839910 
+  [2:2] libmpi_gnu_91.so.12 0x7fffeb3f2b69 MPI_Iprobe
+  [3:0] main 0x6d5187 
+  [3:1] libpthread.so.0 0x7fffed839910 
+  [3:2] linux-vdso.so.1 0x7fffed9d7858 clock_gettime
+  [5:0] main 0x6d5187 
+  [5:1] libpthread.so.0 0x7fffed839910 
+[12] Stack Traceback:
+[13] Stack Traceback:
+[14] Stack Traceback:
+[15] Stack Traceback:
+[16] Stack Traceback:
+  [1:3] libc.so.6 0x7fffea0e4fe0 __clock_gettime
+  [1:4] libmpi_gnu_91.so.12 0x7fffed1bb6cc MPL_wtime
+  [1:5] libmpi_gnu_91.so.12 0x7fffec798f86 MPI_Wtime
+  [3:3] libc.so.6 0x7fffea0e4fe0 __clock_gettime
+  [3:4] libmpi_gnu_91.so.12 0x7fffed1bb6cc MPL_wtime
+  [3:5] libmpi_gnu_91.so.12 0x7fffec798f86 MPI_Wtime
+  [4:0] main 0x6d5187 
+  [4:1] libpthread.so.0 0x7fffed839910 
+  [4:2] linux-vdso.so.1 0x7fffed9d7872 clock_gettime
+  [4:3] libc.so.6 0x7fffea0e4fe0 __clock_gettime
+  [4:4] libmpi_gnu_91.so.12 0x7fffed1bb6cc MPL_wtime
+  [4:5] libmpi_gnu_91.so.12 0x7fffec798f86 MPI_Wtime
+  [6:0] main 0x6d5187 
+  [6:1] libpthread.so.0 0x7fffed839910 
+  [6:2] linux-vdso.so.1 0x7fffed9d7845 clock_gettime
+  [6:3] libc.so.6 0x7fffea0e4fe0 __clock_gettime
+  [6:4] libmpi_gnu_91.so.12 0x7fffed1bb6cc MPL_wtime
+  [6:5] libmpi_gnu_91.so.12 0x7fffec798f86 MPI_Wtime
+  [7:0] main 0x6d5187 
+  [7:1] libpthread.so.0 0x7fffed839910 
+  [7:2] linux-vdso.so.1 0x7fffed9d7858 clock_gettime
+  [7:3] libc.so.6 0x7fffea0e4fe0 __clock_gettime
+  [7:4] libmpi_gnu_91.so.12 0x7fffed1bb6cc MPL_wtime
+  [7:5] libmpi_gnu_91.so.12 0x7fffec798f86 MPI_Wtime
+  [8:0] main 0x6d5187 
+  [8:1] libpthread.so.0 0x7fffed839910 
+  [9:0] main 0x6d5187 
+  [9:1] libpthread.so.0 0x7fffed839910 
+  [9:2] libmpi_gnu_91.so.12 0x7fffecd19520 
+  [9:3] libmpi_gnu_91.so.12 0x7fffeb3f322a MPI_Iprobe
+  [10:0] main 0x6d5187 
+  [10:1] libpthread.so.0 0x7fffed839910 
+  [11:0] main 0x6d5187 
+  [11:1] libpthread.so.0 0x7fffed839910 
+  [11:2] linux-vdso.so.1 0x7fffed9d7887 clock_gettime
+  [11:3] libc.so.6 0x7fffea0e4fe0 __clock_gettime
+  [11:4] libmpi_gnu_91.so.12 0x7fffed1bb6cc MPL_wtime
+  [11:5] libmpi_gnu_91.so.12 0x7fffec798f86 MPI_Wtime
+  [12:0] main 0x6d5187 
+  [12:1] libpthread.so.0 0x7fffed839910 
+  [12:2] libmpi_gnu_91.so.12 0x7fffeb3f27e2 MPI_Iprobe
+  [13:0] main 0x6d5187 
+  [13:1] libpthread.so.0 0x7fffed839910 
+[17] Stack Traceback:
+[18] Stack Traceback:
+[19] Stack Traceback:
+[20] Stack Traceback:
+[21] Stack Traceback:
+[22] Stack Traceback:
+[23] Stack Traceback:
+  [1:6] main 0x6d5269 CmiWallTimer
+  [2:3] main 0x6d42b3 
+  [2:4] main 0x6d4547 CmiGetNonLocal
+  [3:6] main 0x6d5269 CmiWallTimer
+  [4:6] main 0x6d5269 CmiWallTimer
+  [5:2] main 0x6d32d2 
+  [5:3] main 0x6d4429 LrtsAdvanceCommunication(int)
+  [6:6] main 0x6d5269 CmiWallTimer
+  [7:6] main 0x6d5269 CmiWallTimer
+  [8:2] main 0x6d32d2 
+  [9:4] main 0x6d42b3 
+  [10:2] main 0x6d42ae 
+  [11:6] main 0x6d5269 CmiWallTimer
+  [12:3] main 0x6d42b3 
+  [13:2] main 0x6d2269 CmiHandleImmediate()
+  [14:0] main 0x6d5187 
+  [14:1] libpthread.so.0 0x7fffed839910 
+  [14:2] main 0x6a1bce CcdRaiseCondition
+  [15:0] main 0x6d5187 
+  [15:1] libpthread.so.0 0x7fffed839910 
+  [15:2] main 0x6c25a3 CdsFifo_Dequeue
+  [16:0] main 0x6d5187 
+  [16:1] libpthread.so.0 0x7fffed839910 
+  [16:2] main 0x6a22dd CcdCallBacks
+  [17:0] main 0x6d5187 
+  [17:1] libpthread.so.0 0x7fffed839910 
+  [17:2] linux-vdso.so.1 0x7fffed9d7887 clock_gettime
+  [17:3] libc.so.6 0x7fffea0e4fe0 __clock_gettime
+  [17:4] libmpi_gnu_91.so.12 0x7fffed1bb6cc MPL_wtime
+  [17:5] libmpi_gnu_91.so.12 0x7fffec798f86 MPI_Wtime
+  [18:0] main 0x6d5187 
+  [18:1] libpthread.so.0 0x7fffed839910 
+  [18:2] main 0x6a207b CcdCallBacks
+  [19:0] main 0x6d5187 
+  [19:1] libpthread.so.0 0x7fffed839910 
+  [20:0] main 0x6d5187 
+  [20:1] libpthread.so.0 0x7fffed839910 
+  [21:0] main 0x6d5187 
+  [21:1] libpthread.so.0 0x7fffed839910 
+  [21:2] libmpi_gnu_91.so.12 0x7fffec798f99 MPI_Wtime
+  [22:0] main 0x6d5187 
+  [22:1] libpthread.so.0 0x7fffed839910 
+  [23:0] main 0x6d5187 
+  [23:1] libpthread.so.0 0x7fffed839910 
+[24] Stack Traceback:
+  [24:0] main 0x6d5187 
+  [24:1] libpthread.so.0 0x7fffed839910 
+  [24:2] linux-vdso.so.1 0x7fffed9d78bd clock_gettime
+  [24:3] libc.so.6 0x7fffea0e4fe0 __clock_gettime
+  [24:4] libmpi_gnu_91.so.12 0x7fffed1bb6cc MPL_wtime
+[25] Stack Traceback:
+  [25:0] main 0x6d5187 
+  [25:1] libpthread.so.0 0x7fffed839910 
+  [25:2] libmpi_gnu_91.so.12 0x7fffeb3f3f75 MPI_Iprobe
+[26] Stack Traceback:
+  [26:0] main 0x6d5187 
+  [26:1] libpthread.so.0 0x7fffed839910 
+  [26:2] libmpi_gnu_91.so.12 0x7fffecc23bf4 
+  [26:3] libmpi_gnu_91.so.12 0x7fffeb3f3f36 MPI_Iprobe
+[27] Stack Traceback:
+  [27:0] main 0x6d5187 
+  [27:1] libpthread.so.0 0x7fffed839910 
+[28] Stack Traceback:
+  [28:0] main 0x6d5187 
+  [28:1] libpthread.so.0 0x7fffed839910 
+  [28:2] libmpi_gnu_91.so.12 0x7fffeb3f33af MPI_Iprobe
+[29] Stack Traceback:
+  [29:0] main 0x6d5187 
+  [29:1] libpthread.so.0 0x7fffed839910 
+[30] Stack Traceback:
+  [30:0] main 0x6d5187 
+  [30:1] libpthread.so.0 0x7fffed839910 
+[31] Stack Traceback:
+  [1:7] main 0x6a2005 CcdCallBacks
+  [2:5] main 0x6a541d CsdNextMessage
+  [3:7] main 0x6a2005 CcdCallBacks
+  [4:7] main 0x6a2005 CcdCallBacks
+  [5:4] main 0x6d444e 
+  [6:7] main 0x6a2005 CcdCallBacks
+  [7:7] main 0x6a2005 CcdCallBacks
+  [8:3] main 0x6d4429 LrtsAdvanceCommunication(int)
+  [8:4] main 0x6d444e 
+  [9:5] main 0x6d444e 
+  [9:6] main 0x6a1ebc CcdRaiseCondition
+  [10:3] main 0x6d4547 CmiGetNonLocal
+  [10:4] main 0x6a541d CsdNextMessage
+  [11:7] main 0x6a2005 CcdCallBacks
+  [12:4] main 0x6d444e 
+  [13:3] main 0x6d454c CmiGetNonLocal
+  [14:3] main 0x6a5575 CsdScheduleForever
+  [15:3] main 0x6a542f CsdNextMessage
+  [17:6] main 0x6d5269 CmiWallTimer
+  [19:2] main 0x6a5579 CsdScheduleForever
+  [19:3] main 0x6a5785 CsdScheduler
+  [20:2] main 0x6d42ae 
+  [20:3] main 0x6d4547 CmiGetNonLocal
+  [21:3] main 0x6d5269 CmiWallTimer
+  [22:2] main 0x6a1b9b CcdRaiseCondition
+  [23:2] main 0x6a54fd CsdScheduleForever
+  [24:5] libmpi_gnu_91.so.12 0x7fffec798f86 MPI_Wtime
+  [24:6] main 0x6d5269 CmiWallTimer
+  [30:2] libmpi_gnu_91.so.12 0x7fffeb3f2472 MPI_Iprobe
+  [30:3] main 0x6d42b3 
+  [31:0] main 0x6d5187 
+  [31:1] libpthread.so.0 0x7fffed839910 
+  [31:2] libmpi_gnu_91.so.12 0x7fffed00f1b6 
+  [31:3] libmpi_gnu_91.so.12 0x7fffeb3f3374 MPI_Iprobe
+  [1:8] main 0x6a551c CsdScheduleForever
+  [1:9] main 0x6a5785 CsdScheduler
+  [2:6] main 0x6a54dd CsdScheduleForever
+  [3:8] main 0x6a551c CsdScheduleForever
+  [3:9] main 0x6a5785 CsdScheduler
+  [4:8] main 0x6a551c CsdScheduleForever
+  [5:5] main 0x6a1ebc CcdRaiseCondition
+  [6:8] main 0x6a551c CsdScheduleForever
+  [7:8] main 0x6a551c CsdScheduleForever
+  [10:5] main 0x6a54dd CsdScheduleForever
+  [11:8] main 0x6a551c CsdScheduleForever
+  [12:5] main 0x6a1ebc CcdRaiseCondition
+  [12:6] main 0x6a5575 CsdScheduleForever
+  [13:4] main 0x6a541d CsdNextMessage
+  [13:5] main 0x6a54dd CsdScheduleForever
+  [14:4] main 0x6a5785 CsdScheduler
+  [15:4] main 0x6a54dd CsdScheduleForever
+  [16:3] main 0x6a551c CsdScheduleForever
+  [16:4] main 0x6a5785 CsdScheduler
+  [17:7] main 0x6a2005 CcdCallBacks
+  [17:8] main 0x6a551c CsdScheduleForever
+  [18:3] main 0x6a551c CsdScheduleForever
+  [18:4] main 0x6a5785 CsdScheduler
+  [21:4] main 0x6a2005 CcdCallBacks
+  [22:3] main 0x6a5575 CsdScheduleForever
+  [22:4] main 0x6a5785 CsdScheduler
+  [23:3] main 0x6a5785 CsdScheduler
+  [25:3] main 0x6d42b3 
+  [25:4] main 0x6d444e 
+  [26:4] main 0x6d42b3 
+  [26:5] main 0x6d444e 
+  [27:2] main 0x6d2249 CmiHandleImmediate()
+  [27:3] main 0x6d454c CmiGetNonLocal
+  [28:3] main 0x6d42b3 
+  [28:4] main 0x6d4547 CmiGetNonLocal
+  [29:2] main 0x6a1bc6 CcdRaiseCondition
+  [29:3] main 0x6a5575 CsdScheduleForever
+  [1:10] main 0x6d50ba ConverseInit
+  [2:7] main 0x6a5785 CsdScheduler
+  [4:9] main 0x6a5785 CsdScheduler
+  [5:6] main 0x6a5575 CsdScheduleForever
+  [6:9] main 0x6a5785 CsdScheduler
+  [7:9] main 0x6a5785 CsdScheduler
+  [8:5] main 0x6a1ebc CcdRaiseCondition
+  [8:6] main 0x6a5575 CsdScheduleForever
+  [9:7] main 0x6a5575 CsdScheduleForever
+  [9:8] main 0x6a5785 CsdScheduler
+  [10:6] main 0x6a5785 CsdScheduler
+  [11:9] main 0x6a5785 CsdScheduler
+  [14:5] main 0x6d50ba ConverseInit
+  [15:5] main 0x6a5785 CsdScheduler
+  [16:5] main 0x6d50ba ConverseInit
+  [19:4] main 0x6d50ba ConverseInit
+  [20:4] main 0x6a541d CsdNextMessage
+  [21:5] main 0x6a551c CsdScheduleForever
+  [23:4] main 0x6d50ba ConverseInit
+  [24:7] main 0x6a2005 CcdCallBacks
+  [30:4] main 0x6d4547 CmiGetNonLocal
+  [31:4] main 0x6d42b3 
+  [31:5] main 0x6d444e 
+  [2:8] main 0x6d50ba ConverseInit
+  [3:10] main 0x6d50ba ConverseInit
+  [4:10] main 0x6d50ba ConverseInit
+  [5:7] main 0x6a5785 CsdScheduler
+  [6:10] main 0x6d50ba ConverseInit
+  [7:10] main 0x6d50ba ConverseInit
+  [12:7] main 0x6a5785 CsdScheduler
+  [13:6] main 0x6a5785 CsdScheduler
+  [18:5] main 0x6d50ba ConverseInit
+  [19:5] main 0x62626c charm_main
+  [19:6] libc.so.6 0x7fffea03e24d __libc_start_main
+  [20:5] main 0x6a54dd CsdScheduleForever
+  [25:5] main 0x6a1ebc CcdRaiseCondition
+  [26:6] main 0x6a1ebc CcdRaiseCondition
+  [27:4] main 0x6a541d CsdNextMessage
+  [28:5] main 0x6a541d CsdNextMessage
+  [8:7] main 0x6a5785 CsdScheduler
+  [10:7] main 0x6d50ba ConverseInit
+  [11:10] main 0x6d50ba ConverseInit
+  [14:6] main 0x62626c charm_main
+  [14:7] libc.so.6 0x7fffea03e24d __libc_start_main
+  [15:6] main 0x6d50ba ConverseInit
+  [17:9] main 0x6a5785 CsdScheduler
+  [21:6] main 0x6a5785 CsdScheduler
+  [22:5] main 0x6d50ba ConverseInit
+  [23:5] main 0x62626c charm_main
+  [23:6] libc.so.6 0x7fffea03e24d __libc_start_main
