@@ -6,7 +6,10 @@ HEADERS = $(MODULE).decl.h $(MODULE).def.h
 EXEC = $(MODULE)
 
 $(EXEC): $(CPP_FILE) $(HEADERS)
-	charmc -o $@ $< #-tracemode projections
+	charmc -o $@ $<
+
+proj: $(CPP_FILE) $(HEADERS)
+	charmc -o $@ $< -tracemode projections
 
 $(HEADERS): $(CI_FILE)
 	charmc $^
