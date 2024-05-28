@@ -1,0 +1,21 @@
+Charm++>ofi> OFI CXI extensions enabled
+Charm++>ofi> exchanging addresses over TCP
+Charm++> Running in non-SMP mode: 1 processes (PEs)
+Converse/Charm++ Commit ID: v7.1.0-devel-370-gf2a2c94bb
+Charm++: Tracemode Projections enabled.
+Trace: traceroot: /autofs/nccs-svm1_home1/mayat4/ckio-testsuite/stream-reading/proj/small-debug/main
+CharmLB> Load balancer assumes all CPUs are same.
+Charm++> Running on 1 hosts (1 sockets x 56 cores x 2 PUs = 112-way SMP)
+Charm++> cpu topology info is gathered in 0.000 seconds.
+CharmLB> Load balancing instrumentation for communication is off.
+done parsing args, starting prog
+Starting timers and opening file: /lustre/orion/bip249/scratch/mayat4//testfile_8_0.txt
+-----SUMMARY DATA------
+1 1 1 512 0.000000 3.825283
+-----END SUMMARY------
+*************************************************************
+Warning: Projections log flushed to disk 1 times on 1 cores: 0.
+Warning: The performance data is likely invalid, unless the flushes have been explicitly synchronized by your program.
+Warning: This may be fixed by specifying a larger +logsize (current value 1000000).
+*************************************************************
+[Partition 0][Node 0] End of program

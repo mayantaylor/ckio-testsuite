@@ -1,0 +1,10 @@
+Charm++>ofi> exchanging addresses over TCP
+Charm++> Running in non-SMP mode: 2 processes (PEs)
+Converse/Charm++ Commit ID: v7.1.0-devel-361-gcc4cf1aa0
+Isomalloc> Synchronized global address space.
+CharmLB> Load balancer assumes all CPUs are same.
+Charm++> Running on 2 hosts (1 sockets x 56 cores x 2 PUs = 112-way SMP)
+Charm++> cpu topology info is gathered in 0.000 seconds.
+CharmLB> Load balancing instrumentation for communication is off.
+done parsing args, starting prog
+Starting timers and opening file: /lustre/orion/bip249/scratch/mayat4//testfile_1_0.txt

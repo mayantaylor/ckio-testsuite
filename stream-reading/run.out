@@ -1,0 +1,63 @@
+------- Partition 0 Processor 0 Exiting: Called CmiAbort ------
+Reason: OFI::LrtsInit::fi_domain error, for single node use try --network=single_node_vni
+srun: error: frontier08063: task 0: Exited with exit code 1
+srun: Terminating StepId=1978332.0
+------- Partition 0 Processor 0 Exiting: Called CmiAbort ------
+Reason: OFI::LrtsInit::fi_domain error, for single node use try --network=single_node_vni
+srun: error: frontier08063: task 0: Exited with exit code 1
+srun: Terminating StepId=1978332.1
+------- Partition 0 Processor 0 Exiting: Called CmiAbort ------
+Reason: OFI::LrtsInit::fi_domain error, for single node use try --network=single_node_vni
+srun: error: frontier08063: task 0: Exited with exit code 1
+srun: Terminating StepId=1978332.2
+------- Partition 0 Processor 0 Exiting: Called CmiAbort ------
+Reason: OFI::LrtsInit::fi_domain error, for single node use try --network=single_node_vni
+srun: error: frontier08063: task 0: Exited with exit code 1
+srun: Terminating StepId=1978332.3
+------- Partition 0 Processor 0 Exiting: Called CmiAbort ------
+Reason: OFI::LrtsInit::fi_domain error, for single node use try --network=single_node_vni
+srun: error: frontier08063: task 0: Exited with exit code 1
+srun: Terminating StepId=1978332.4
+------- Partition 0 Processor 0 Exiting: Called CmiAbort ------
+Reason: OFI::LrtsInit::fi_domain error, for single node use try --network=single_node_vni
+srun: error: frontier08063: task 0: Exited with exit code 1
+srun: Terminating StepId=1978332.5
+------- Partition 0 Processor 0 Exiting: Called CmiAbort ------
+Reason: OFI::LrtsInit::fi_domain error, for single node use try --network=single_node_vni
+srun: error: frontier08063: task 0: Exited with exit code 1
+srun: Terminating StepId=1978332.6
+------- Partition 0 Processor 0 Exiting: Called CmiAbort ------
+Reason: OFI::LrtsInit::fi_domain error, for single node use try --network=single_node_vni
+srun: error: frontier08063: task 0: Exited with exit code 1
+srun: Terminating StepId=1978332.7
+------- Partition 0 Processor 0 Exiting: Called CmiAbort ------
+Reason: OFI::LrtsInit::fi_domain error, for single node use try --network=single_node_vni
+srun: error: frontier08063: task 0: Exited with exit code 1
+srun: Terminating StepId=1978332.8
+------- Partition 0 Processor 0 Exiting: Called CmiAbort ------
+Reason: OFI::LrtsInit::fi_domain error, for single node use try --network=single_node_vni
+srun: error: frontier08063: task 0: Exited with exit code 1
+srun: Terminating StepId=1978332.9
+------- Partition 0 Processor 0 Exiting: Called CmiAbort ------
+Reason: OFI::LrtsInit::fi_domain error, for single node use try --network=single_node_vni
+srun: error: frontier08063: task 0: Exited with exit code 1
+srun: Terminating StepId=1978332.10
+------- Partition 0 Processor 0 Exiting: Called CmiAbort ------
+Reason: OFI::LrtsInit::fi_domain error, for single node use try --network=single_node_vni
+srun: error: frontier08063: task 0: Exited with exit code 1
+srun: Terminating StepId=1978332.11
+------- Partition 0 Processor 0 Exiting: Called CmiAbort ------
+Reason: OFI::LrtsInit::fi_domain error, for single node use try --network=single_node_vni
+srun: error: frontier08063: task 0: Exited with exit code 1
+srun: Terminating StepId=1978332.12
+------- Partition 0 Processor 0 Exiting: Called CmiAbort ------
+Reason: OFI::LrtsInit::fi_domain error, for single node use try --network=single_node_vni
+srun: error: frontier08063: task 0: Exited with exit code 1
+srun: Terminating StepId=1978332.13
+------- Partition 0 Processor 0 Exiting: Called CmiAbort ------
+Reason: OFI::LrtsInit::fi_domain error, for single node use try --network=single_node_vni
+srun: error: frontier08063: task 0: Exited with exit code 1
+srun: Terminating StepId=1978332.14
+srun: Job step aborted: Waiting up to 32 seconds for job step to finish.
+slurmstepd: error: *** STEP 1978381.5 ON frontier10354 CANCELLED AT 2024-05-28T12:15:45 ***
+slurmstepd: error: *** JOB 1978381 ON frontier10354 CANCELLED AT 2024-05-28T12:15:45 ***

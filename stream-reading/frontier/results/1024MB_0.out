@@ -1,0 +1,14 @@
+Charm++>ofi> OFI CXI extensions enabled
+Charm++>ofi> exchanging addresses over TCP
+Charm++> Running in non-SMP mode: 1 processes (PEs)
+Converse/Charm++ Commit ID: v7.1.0-devel-370-gf2a2c94bb
+CharmLB> Load balancer assumes all CPUs are same.
+Charm++> Running on 1 hosts (1 sockets x 56 cores x 2 PUs = 112-way SMP)
+Charm++> cpu topology info is gathered in 0.000 seconds.
+CharmLB> Load balancing instrumentation for communication is off.
+done parsing args, starting prog
+Starting timers and opening file: /lustre/orion/bip249/scratch/mayat4//testfile_2_4.txt
+-----SUMMARY DATA------
+1 1 1 1024 0.000000 3.724476
+-----END SUMMARY------
+[Partition 0][Node 0] End of program
