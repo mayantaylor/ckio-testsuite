@@ -41,7 +41,7 @@ mainmodule iotest
         session = m->session;
         testers = CProxy_Test::ckNew(m->session, sizeToRead, n);
 
-        delete m;
+        
       }
 
       when test_read(CkReductionMsg * m) serial

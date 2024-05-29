@@ -62,7 +62,8 @@ class Test : public CBase_Test
 public:
   Test(Ck::IO::Session token, size_t bytesToRead)
   {
-    CkCallback sessionEnd(CkIndex_Test::readDone(0), thisProxy[thisIndex]);
+
+    CkCallback done(CkIndex_Main::test_read(0), mainproxy);
     char *dataBuffer2;
     try
     {
@@ -95,51 +96,49 @@ public:
       timeIdx++;
     }
 
-    frtimeavg = frtimeavg;
-    
+    frtimeavg = frtimeavg;    
    
     CkAssert(fr.gcount() == size);
 
     
     // ifstream streaming
-    std::ifstream rfile;
-    rfile.open(filename2);
-    if (rfile.is_open()) {
-      rfile.seekg(bytesToRead * thisIndex);
+    // std::ifstream rfile;
+    // rfile.open(filename2);
+    // if (rfile.is_open()) {
+    //   rfile.seekg(bytesToRead * thisIndex);
 
-      double ifsavg = 0;
-      int count = 0;
-      have_read = 0;
-      while (have_read < size) {
-	double start = CkWallTimer();
-	rfile.read(dataBuffer2 + have_read, itersize);
-	have_read += itersize;
+    //   double ifsavg = 0;
+    //   int count = 0;
+    //   have_read = 0;
+    //   while (have_read < size) {
+    // 	double start = CkWallTimer();
+    // 	rfile.read(dataBuffer2 + have_read, itersize);
+    // 	have_read += itersize;
 	
-	ifsavg += CkWallTimer() - start;
-	count++;
-      }
-      rfile.close();
+    // 	ifsavg += CkWallTimer() - start;
+    // 	count++;
+    //   }
+    //   rfile.close();
 
-      CkPrintf("Ifstream total time = %f, filereader total time = %f\n", ifsavg, frtimeavg);
-    }
+    //   CkPrintf("Ifstream total time = %f, filereader total time = %f for %d read calls\n", ifsavg, frtimeavg, count);
+    // }
 
-    CkPrintf("Contributing to reduction\n");
 
     
-    contribute(sessionEnd);
+    contribute(done);
   }
 
   Test(CkMigrateMessage *m) {}
 
   void readDone(Ck::IO::ReadCompleteMsg *m)
   {
-    CkCallback done(CkIndex_Main::test_read(0), mainproxy);
+
 
     assert(dataBuffer[0] == 'a');
     assert(dataBuffer[size - 1] == 'a');
 
     free(dataBuffer);
-    contribute(done);
+
   }
 };
 
