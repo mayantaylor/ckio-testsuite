@@ -9,6 +9,8 @@
 CProxy_Main mainproxy;
 std::string filename;
 std::string filename2;
+int readType;
+size_t itersize;
 
 class Main : public CBase_Main
 {
@@ -27,6 +29,7 @@ class Main : public CBase_Main
   int numBufChares;
 
 
+  
 public:
   Main(CkArgMsg *m)
   {
@@ -34,11 +37,11 @@ public:
     fileSize = (size_t)atoi(m->argv[2]) * 1024 * 1024; // file size = arg 2
     n = atoi(m->argv[3]);                              // arg 3 = number of readers
     std::string fn(m->argv[4]);                        // arg 4 = filename
-    std::string fn2(m->argv[5]);                        // arg 4 = filename
-
+    readType = atoi(m->argv[5]);                        // arg 4 = filename
+    itersize = (size_t) atoi(m->argv[6]);
 
     filename = fn;
-    filename2 = fn2;
+  
 
     CkPrintf("done parsing args, starting prog\n");
     mainproxy = thisProxy;
@@ -63,15 +66,15 @@ public:
   Test(Ck::IO::Session token, size_t bytesToRead)
   {
 
-    CkCallback done(CkIndex_Main::test_read(0), mainproxy);
+
+
     char *dataBuffer2;
     try
     {
       dataBuffer = new char[bytesToRead];
-      dataBuffer2 = new char[bytesToRead];
+      //dataBuffer2 = new char[bytesToRead];
     }
-    catch (const std::bad_alloc &e)
-    {
+    catch (const std::bad_alloc &e)      {
       CkPrintf("ERROR: Data buffer malloc of %zu bytes in Test chare %d failed.\n", bytesToRead, thisIndex);
       CkExit();
     }
@@ -80,29 +83,76 @@ public:
     
     // filereader streaming
     size = bytesToRead;
-    Ck::IO::FileReader fr(token);
-    fr.seekg(bytesToRead * thisIndex);  // seek to the correct place in the file
-    size_t have_read=0;
 
-    double frtimeavg = 0;
-    int timeIdx = 0;
-    size_t itersize=size;    
-    while (have_read < size) {
-      double start = CkWallTimer();
-      fr.read(dataBuffer + have_read,
-           itersize);  // hopefully this will return the same data as Ck::IO::read
-      have_read+=itersize;
-      frtimeavg += CkWallTimer() - start;
-      timeIdx++;
+
+    if (readType == 0) {
+      Ck::IO::FileReader fr(token);
+       
+      fr.seekg(bytesToRead * thisIndex);  // seek to the correct place in the file
+      size_t have_read=0;
+
+
+      while (have_read < size) {
+	double start = CkWallTimer();
+	fr.read(dataBuffer + have_read,
+		itersize);  // hopefully this will return the same data as Ck::IO::read
+	have_read+=itersize;
+
+      }
+ 
+      assert(dataBuffer[0] == 'a');
+      assert(dataBuffer[size - 1] == 'a');
+      thisProxy[thisIndex].readDone(0);
+      
+    }
+   else if (readType == 1) {
+     CkPrintf("doing plain ckio\n");
+      CkCallback sessionEnd(CkIndex_Test::readDone(0), thisProxy[thisIndex]);
+      Ck::IO::read(token, bytesToRead, bytesToRead * thisIndex, dataBuffer, sessionEnd);
+    }
+    
+    else if (readType == 2) {
+
+      FILE* filePointer;
+      filePointer = fopen(filename.c_str(), "r");
+      size_t num_bytes_read = fread(dataBuffer, sizeof(char), bytesToRead, filePointer);
+      fclose(filePointer);
+      
+      assert(dataBuffer[0] == 'a');
+      assert(dataBuffer[size - 1] == 'a');
+
+      thisProxy[thisIndex].readDone(0);
+
     }
 
-    frtimeavg = frtimeavg;    
-   
-    CkAssert(fr.gcount() == size);
+    else {
+      std::ifstream fr;
+      fr.open(filename);
+
+      fr.seekg(bytesToRead * thisIndex);  // seek to the correct place in the file
+      size_t have_read=0;
+
+      double frtimeavg = 0;
+      int timeIdx = 0;
+
+      while (have_read < size) {
+	double start = CkWallTimer();
+	fr.read(dataBuffer + have_read,
+		itersize);  // hopefully this will return the same data as Ck::IO::read
+	have_read+=itersize;
+      }
+
+      fr.close();
+      
+      thisProxy[thisIndex].readDone(0);
+    }
+
+
 
     
+
     // ifstream streaming
-    // std::ifstream rfile;
+    // 
     // rfile.open(filename2);
     // if (rfile.is_open()) {
     //   rfile.seekg(bytesToRead * thisIndex);
@@ -123,21 +173,23 @@ public:
     //   CkPrintf("Ifstream total time = %f, filereader total time = %f for %d read calls\n", ifsavg, frtimeavg, count);
     // }
 
-
+    //free(dataBuffer);
     
-    contribute(done);
+
   }
 
   Test(CkMigrateMessage *m) {}
 
   void readDone(Ck::IO::ReadCompleteMsg *m)
   {
-
-
+    CkPrintf("Read Done\n");
+    CkCallback done(CkIndex_Main::test_read(0), mainproxy);
+    
     assert(dataBuffer[0] == 'a');
     assert(dataBuffer[size - 1] == 'a');
 
     free(dataBuffer);
+    contribute(done);
 
   }
 };

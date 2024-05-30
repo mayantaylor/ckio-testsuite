@@ -36,7 +36,7 @@ mainmodule iotest
       }
       when start_read(Ck::IO::SessionReadyMsg * m) serial
       {
-      CkPrintf("Starting read\n");
+
         size_t sizeToRead = fileSize / n; // only works if fileSize is a multiple of n
         session = m->session;
         testers = CProxy_Test::ckNew(m->session, sizeToRead, n);
@@ -46,7 +46,7 @@ mainmodule iotest
 
       when test_read(CkReductionMsg * m) serial
       {
-      CkPrintf("read complete\n");
+
         totalTime = CkWallTimer() - start_time;
         CkCallback cb(CkIndex_Main::sessionClosed(0), thisProxy);
         Ck::IO::closeReadSession(session, cb);
@@ -79,7 +79,7 @@ mainmodule iotest
       }
     };
     entry void start_read(Ck::IO::SessionReadyMsg * m);
-    entry void test_read(CkReductionMsg * m);
+    entry [reductiontarget] void test_read(CkReductionMsg * m);
     entry void closed(CkReductionMsg * m);
     entry void sessionClosed(CkReductionMsg * m);
     entry void iterDone();
