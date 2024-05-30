@@ -78,8 +78,6 @@ public:
       CkPrintf("ERROR: Data buffer malloc of %zu bytes in Test chare %d failed.\n", bytesToRead, thisIndex);
       CkExit();
     }
-
-
     
     // filereader streaming
     size = bytesToRead;
@@ -102,17 +100,20 @@ public:
  
       assert(dataBuffer[0] == 'a');
       assert(dataBuffer[size - 1] == 'a');
-      thisProxy[thisIndex].readDone(0);
+
+      CkCallback done(CkIndex_Main::test_read(0), mainproxy);
+      contribute(done);
       
     }
-   else if (readType == 1) {
-     CkPrintf("doing plain ckio\n");
+
+
+    else if (readType == 1) {
+      CkPrintf("doing plain ckio\n");
       CkCallback sessionEnd(CkIndex_Test::readDone(0), thisProxy[thisIndex]);
       Ck::IO::read(token, bytesToRead, bytesToRead * thisIndex, dataBuffer, sessionEnd);
     }
     
     else if (readType == 2) {
-
       FILE* filePointer;
       filePointer = fopen(filename.c_str(), "r");
       size_t num_bytes_read = fread(dataBuffer, sizeof(char), bytesToRead, filePointer);
@@ -122,7 +123,6 @@ public:
       assert(dataBuffer[size - 1] == 'a');
 
       thisProxy[thisIndex].readDone(0);
-
     }
 
     else {
@@ -148,33 +148,6 @@ public:
     }
 
 
-
-    
-
-    // ifstream streaming
-    // 
-    // rfile.open(filename2);
-    // if (rfile.is_open()) {
-    //   rfile.seekg(bytesToRead * thisIndex);
-
-    //   double ifsavg = 0;
-    //   int count = 0;
-    //   have_read = 0;
-    //   while (have_read < size) {
-    // 	double start = CkWallTimer();
-    // 	rfile.read(dataBuffer2 + have_read, itersize);
-    // 	have_read += itersize;
-	
-    // 	ifsavg += CkWallTimer() - start;
-    // 	count++;
-    //   }
-    //   rfile.close();
-
-    //   CkPrintf("Ifstream total time = %f, filereader total time = %f for %d read calls\n", ifsavg, frtimeavg, count);
-    // }
-
-    //free(dataBuffer);
-    
 
   }
 
