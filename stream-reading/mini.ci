@@ -39,7 +39,8 @@ mainmodule iotest
 
         size_t sizeToRead = fileSize / n; // only works if fileSize is a multiple of n
         session = m->session;
-        testers = CProxy_Test::ckNew(m->session, sizeToRead, n);
+
+        testers = CProxy_Test::ckNew(m->session, sizeToRead, readType, n);
 
         
       }
@@ -73,7 +74,7 @@ mainmodule iotest
 
 
         CkPrintf("-----SUMMARY DATA------\n");
-        CkPrintf("%d %d %d %llu %f\n", n, numBufChares, CkNumPes(), fileSize / (1024 * 1024), totalTime);
+        CkPrintf("%d %d %d %d %llu %f\n",readType, n, numBufChares, CkNumPes(), fileSize / (1024 * 1024), totalTime);
         CkPrintf("-----END SUMMARY------\n");
         CkExit();
       }
@@ -88,7 +89,7 @@ mainmodule iotest
 
   array[1D] Test
   {
-    entry Test(Ck::IO::Session token, size_t bytesToRead);
+    entry Test(Ck::IO::Session token, size_t bytesToRead, int readType);
     entry void readDone(Ck::IO::ReadCompleteMsg * m);
   };
 

@@ -9,7 +9,6 @@
 CProxy_Main mainproxy;
 std::string filename;
 std::string filename2;
-int readType;
 size_t itersize;
 
 class Main : public CBase_Main
@@ -27,7 +26,7 @@ class Main : public CBase_Main
 
   double start_time;
   int numBufChares;
-
+  int readType;
 
   
 public:
@@ -38,12 +37,16 @@ public:
     n = atoi(m->argv[3]);                              // arg 3 = number of readers
     std::string fn(m->argv[4]);                        // arg 4 = filename
     readType = atoi(m->argv[5]);                        // arg 4 = filename
+
+    
     itersize = (size_t) atoi(m->argv[6]);
 
+
+    
     filename = fn;
   
 
-    CkPrintf("done parsing args, starting prog\n");
+    CkPrintf("done parsing args, starting prog with readType %d, itersize %llu\n", readType, itersize);
     mainproxy = thisProxy;
     thisProxy.run(); // open files
     delete m;
@@ -63,12 +66,11 @@ class Test : public CBase_Test
   bool workDone = false;
 
 public:
-  Test(Ck::IO::Session token, size_t bytesToRead)
+  Test(Ck::IO::Session token, size_t bytesToRead, int readType)
   {
 
+    size_t itersize = 32;
 
-
-    char *dataBuffer2;
     try
     {
       dataBuffer = new char[bytesToRead];
@@ -82,33 +84,33 @@ public:
     // filereader streaming
     size = bytesToRead;
 
-
     if (readType == 0) {
+
       Ck::IO::FileReader fr(token);
        
-      fr.seekg(bytesToRead * thisIndex);  // seek to the correct place in the file
-      size_t have_read=0;
+       fr.seekg(bytesToRead * thisIndex);  // seek to the correct place in the file
+       size_t have_read=0;
 
 
-      while (have_read < size) {
-	double start = CkWallTimer();
-	fr.read(dataBuffer + have_read,
-		itersize);  // hopefully this will return the same data as Ck::IO::read
-	have_read+=itersize;
+       while (have_read < size) {
+     	double start = CkWallTimer();
+     	fr.read(dataBuffer + have_read,
+     		itersize);  // hopefully this will return the same data as Ck::IO::read
+     	have_read+=itersize;
 
-      }
+       }
  
-      assert(dataBuffer[0] == 'a');
-      assert(dataBuffer[size - 1] == 'a');
+       assert(dataBuffer[0] == 'a');
+       assert(dataBuffer[size - 1] == 'a');
 
-      CkCallback done(CkIndex_Main::test_read(0), mainproxy);
-      contribute(done);
+       CkCallback done(CkIndex_Main::test_read(0), mainproxy);
+       contribute(done);
       
     }
 
-
+    
     else if (readType == 1) {
-      CkPrintf("doing plain ckio\n");
+
       CkCallback sessionEnd(CkIndex_Test::readDone(0), thisProxy[thisIndex]);
       Ck::IO::read(token, bytesToRead, bytesToRead * thisIndex, dataBuffer, sessionEnd);
     }
@@ -121,8 +123,10 @@ public:
       
       assert(dataBuffer[0] == 'a');
       assert(dataBuffer[size - 1] == 'a');
+      CkCallback done(CkIndex_Main::test_read(0), mainproxy);
+      contribute(done);
 
-      thisProxy[thisIndex].readDone(0);
+
     }
 
     else {
@@ -143,8 +147,13 @@ public:
       }
 
       fr.close();
+
+      assert(dataBuffer[0] == 'a');
+      assert(dataBuffer[size - 1] == 'a');
       
-      thisProxy[thisIndex].readDone(0);
+      CkCallback done(CkIndex_Main::test_read(0), mainproxy);
+      contribute(done);
+
     }
 
 
@@ -155,7 +164,7 @@ public:
 
   void readDone(Ck::IO::ReadCompleteMsg *m)
   {
-    CkPrintf("Read Done\n");
+
     CkCallback done(CkIndex_Main::test_read(0), mainproxy);
     
     assert(dataBuffer[0] == 'a');
