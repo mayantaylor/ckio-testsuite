@@ -14,12 +14,14 @@
 /*readonly*/ std::string filename;
 /*readonly*/ size_t allocFloor; // size of chare allocation (floor)
 /*readonly*/ CProxy_Main mainProxy;
+/*readonly*/ int bg_on;
 
 class Main : public CBase_Main
 {
   Main_SDAG_CODE
       CProxy_Reader reader;
   int i;
+  CProxy_Background bg;
 
   double all_start;
   double all_time;
@@ -27,9 +29,9 @@ class Main : public CBase_Main
 public:
   Main(CkArgMsg *msg)
   {
-    if (msg->argc != 4)
+    if (msg->argc != 5)
     {
-      CkPrintf("<Main> %s: expecting three arguments:\n\t<N> number of chares\n\t<K> input file size (GB)\t<F> filename\n",
+      CkPrintf("<Main> %s: expecting four arguments:\n\t<N> number of chares\n\t<K> input file size (GB)\t<F> filename \t<B> background work boolean\n",
                msg->argv[0]);
       CkExit();
     }
@@ -38,6 +40,8 @@ public:
     fileSize = (size_t)atoi(msg->argv[2]) * 1024 * 1024;
     std::string fn(msg->argv[3]);
     filename = fn;
+
+    bg_on = atoi(msg->argv[4]);
 
     allocFloor = (size_t)(fileSize / (double)numChares);
     mainProxy = thisProxy;
@@ -120,6 +124,45 @@ public:
 
     CkCallback minCb(CkReductionTarget(Main, minReduction), mainProxy);
     contribute(sizeof(double), &read_time, CkReduction::min_double, minCb);
+  }
+};
+
+class Background : public CBase_Background
+{
+private:
+  bool workDone;
+
+public:
+  Background()
+  {
+    workDone = false;
+    thisProxy[thisIndex].dummyBackgroundWork();
+  }
+  void setWorkDone()
+  {
+    workDone = true;
+  }
+
+  void dummyBackgroundWork() // threaded entry method
+  {
+    int dummyCounter = 10;
+    double totalTime = 0;
+
+    // do some dummy work for 1000 iterations
+    int iter = 0;
+    while (iter < 500)
+    {
+      double start = CkWallTimer();
+      // inner loop approx 10 microseconds
+      while (CkWallTimer() - start < 1 * 1e-3)
+        ;
+      totalTime += CkWallTimer() - start;
+      CthYield();
+      iter++;
+    }
+
+    CkCallback done(CkReductionTarget(Main, bgDone), mainProxy);
+    contribute(sizeof(double), &totalTime, CkReduction::sum_double, done);
   }
 };
 

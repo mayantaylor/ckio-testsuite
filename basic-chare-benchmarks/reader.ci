@@ -22,10 +22,21 @@ mainmodule reader
 
 				all_start = CkWallTimer();
 				reader.readFile(roundfile);
+
+				// Start background work
+				if (bg_on)
+				{
+					bg = CProxy_Background::ckNew();
+				}
+				else
+				{
+					thisProxy.bgDone(0);
+				}
 			}
 
 			when maxReduction(double maxTime),
-				minReduction(double minTime)
+				minReduction(double minTime),
+				bgDone(double bg_time)
 			{
 				serial
 				{
@@ -34,8 +45,9 @@ mainmodule reader
 					CkPrintf("Total time = %fs\n", total);
 					all_time = total; // record time in array for final summary
 
+					bg_time = bg_time / CkNumPes();
 					CkPrintf("-----SUMMARY DATA------\n");
-					CkPrintf("%d %d %f\n", CkNumPes(), numChares, all_time);
+					CkPrintf("%d %d %f %f\n", CkNumPes(), numChares, bg_time, all_time);
 					CkPrintf("-----END SUMMARY------\n");
 
 					CkExit();
@@ -44,10 +56,18 @@ mainmodule reader
 		}
 		entry[reductiontarget] void minReduction(double sumTime);
 		entry[reductiontarget] void maxReduction(double maxTime);
+		entry[reductiontarget] void bgDone(double time);
 	}
 	array[1D] Reader
 	{
 		entry Reader();
 		entry void readFile(std::string filename);
+	}
+
+	group Background
+	{
+		entry Background();
+		entry[threaded] void dummyBackgroundWork();
+		entry void setWorkDone();
 	}
 }

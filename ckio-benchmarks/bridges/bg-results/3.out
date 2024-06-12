@@ -1,0 +1,16 @@
+
+Running as 32 OS processes: ./main 32 4096 1024 /ocean/projects/asc050015p/mtaylor5//testfile_0_3.txt 1 +skip_cpu_topology
+charmrun> /usr/bin/setarch x86_64 -R mpirun -np 32 ./main 32 4096 1024 /ocean/projects/asc050015p/mtaylor5//testfile_0_3.txt 1 +skip_cpu_topology
+Charm++> Running on MPI library: Open MPI v5.0.3, package: Open MPI ywg@br013.ib.bridges2.psc.edu Distribution, ident: 5.0.3, repo rev: v5.0.3, Apr 08, 2024 (MPI standard: 3.1)
+Charm++> Level of thread support used: MPI_THREAD_SINGLE (desired: MPI_THREAD_SINGLE)
+Charm++> Running in non-SMP mode: 32 processes (PEs)
+Converse/Charm++ Commit ID: v7.1.0-devel-352-g4e13783a2
+Isomalloc> Synchronized global address space.
+CharmLB> Load balancer assumes all CPUs are same.
+CharmLB> Load balancing instrumentation for communication is off.
+done parsing args, starting prog
+Starting timers and opening file: /ocean/projects/asc050015p/mtaylor5//testfile_0_3.txt
+-----SUMMARY DATA------
+1024 32 32 4096 0.500975 0.724183
+-----END SUMMARY------
+[Partition 0][Node 0] End of program

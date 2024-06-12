@@ -1,0 +1,17 @@
+
+Running as 8 OS processes: ./main 8 1024 4096 /ocean/projects/asc050015p/mtaylor5//testfile_9_9.txt 1 +setcpuaffinity
+charmrun> srun --mpi=pmi2 -n 8 ./main 8 1024 4096 /ocean/projects/asc050015p/mtaylor5//testfile_9_9.txt 1 +setcpuaffinity
+Charm++> Running in non-SMP mode: 8 processes (PEs)
+Converse/Charm++ Commit ID: v8.0.1-devel-1-g6b1ef8352
+Isomalloc> Synchronized global address space.
+CharmLB> Load balancer assumes all CPUs are same.
+Charm++> cpu affinity enabled. 
+Charm++> Running on 4 hosts (2 sockets x 64 cores x 1 PUs = 128-way SMP)
+Charm++> cpu topology info is gathered in 0.019 seconds.
+CharmLB> Load balancing instrumentation for communication is off.
+done parsing args, starting prog
+Starting timers and opening file: /ocean/projects/asc050015p/mtaylor5//testfile_9_9.txt
+-----SUMMARY DATA------
+4096 8 8 1024 0.531547 0.975866 0.005655 0.140460 0.955451 0.142502 0.962792
+-----END SUMMARY------
+[Partition 0][Node 0] End of program

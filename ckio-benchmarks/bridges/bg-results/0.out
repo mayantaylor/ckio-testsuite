@@ -1,0 +1,3 @@
+
+Running as 32 OS processes: ./main 32 4096 1024 /ocean/projects/asc050015p/mtaylor5//testfile_3_0.txt 1 +skip_cpu_topology
+charmrun> /usr/bin/setarch x86_64 -R mpirun -np 32 ./main 32 4096 1024 /ocean/projects/asc050015p/mtaylor5//testfile_3_0.txt 1 +skip_cpu_topology

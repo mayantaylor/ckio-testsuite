@@ -24,78 +24,67 @@ int main(int argc, char **argv)
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
 
-  double times[10];
-  double fileSize = 1024 * 1024 * atoi(argv[1]);
+  double time;
+  size_t fileSize = 1024 * 1024 * atoi(argv[1]);
 
-  for (int i = 0; i < 10; i++)
+  // add i to the end of argv string to create a new file
+  char filename[50];
+  sprintf(filename, "%s", argv[2]);
+
+  MPI_File fh;
+  double all_time = MPI_Wtime();
+  MPI_CHECK(MPI_File_open(MPI_COMM_WORLD, filename, MPI_MODE_RDONLY, MPI_INFO_NULL, &fh));
+
+  size_t mySize = fileSize / size;
+  char *buffer = (char *)malloc(mySize);
+
+  // // seek to start
+  int start_pos = rank * mySize;
+  MPI_CHECK(MPI_File_set_view(fh, start_pos, MPI_CHAR, MPI_CHAR, "native", MPI_INFO_NULL));
+
+  // // read allocation
+  double start = MPI_Wtime();
+  MPI_Status status;
+  MPI_File_read_all(fh, buffer, mySize, MPI_CHAR, &status);
+  double end = MPI_Wtime();
+
+  int read_count;
+  MPI_Get_count(&status, MPI_CHAR, &read_count);
+  if (read_count != mySize)
   {
-    // add i to the end of argv string to create a new file
-    char filename[50];
-    sprintf(filename, "%s%d", argv[2], i);
+    printf("Something failed on rank %d. Bytes read = %d\n", rank, read_count);
+    return 1;
+  }
 
-    MPI_File fh;
-    double all_time = MPI_Wtime();
-    MPI_CHECK(MPI_File_open(MPI_COMM_WORLD, filename, MPI_MODE_RDONLY, MPI_INFO_NULL, &fh));
+  float myMillisec = (end - start) * 1000;
 
-    double mySize = fileSize / size;
-    char *buffer = (char *)malloc(mySize);
+  // cleanup
+  free(buffer);
 
-    // // seek to start
-    int start_pos = rank * mySize;
-    MPI_CHECK(MPI_File_set_view(fh, start_pos, MPI_CHAR, MPI_CHAR, "native", MPI_INFO_NULL));
+  // contribute
+  float global_min;
+  float global_max;
+  float global_sum;
+  MPI_CHECK(MPI_Reduce(&myMillisec, &global_min, 1, MPI_FLOAT, MPI_MIN, 0, MPI_COMM_WORLD));
+  MPI_CHECK(MPI_Reduce(&myMillisec, &global_max, 1, MPI_FLOAT, MPI_MAX, 0, MPI_COMM_WORLD));
+  MPI_CHECK(MPI_Reduce(&myMillisec, &global_sum, 1, MPI_FLOAT, MPI_SUM, 0, MPI_COMM_WORLD));
 
-    // // read allocation
-    double start = MPI_Wtime();
-    MPI_Status status;
-    MPI_File_read_all(fh, buffer, mySize, MPI_CHAR, &status);
-    double end = MPI_Wtime();
+  MPI_File_close(&fh);
 
-    int read_count;
-    MPI_Get_count(&status, MPI_CHAR, &read_count);
-    if (read_count != mySize)
-    {
-      printf("Something failed on rank %d. Bytes read = %d\n", rank, read_count);
-      return 1;
-    }
-
-    float myMillisec = (end - start) * 1000;
-
-    // cleanup
-    free(buffer);
-
-    // contribute
-    float global_min;
-    float global_max;
-    float global_sum;
-    MPI_CHECK(MPI_Reduce(&myMillisec, &global_min, 1, MPI_FLOAT, MPI_MIN, 0, MPI_COMM_WORLD));
-    MPI_CHECK(MPI_Reduce(&myMillisec, &global_max, 1, MPI_FLOAT, MPI_MAX, 0, MPI_COMM_WORLD));
-    MPI_CHECK(MPI_Reduce(&myMillisec, &global_sum, 1, MPI_FLOAT, MPI_SUM, 0, MPI_COMM_WORLD));
-
-    MPI_File_close(&fh);
-
-    if (rank == 0)
-    {
-      double endall = MPI_Wtime();
-      float total_time = (endall - all_time) * 1000;
-      times[i] = total_time;
-      printf("Total time with %d procs: %f ms\n.", size, total_time);
-      printf("Time spent in read(): min=%f, max=%f, avg=%f\n", global_min, global_max, global_sum / size);
-    }
+  if (rank == 0)
+  {
+    double endall = MPI_Wtime();
+    float total_time = (endall - all_time) * 1000;
+    time = total_time;
+    printf("Total time with %d procs: %f ms\n.", size, total_time);
+    printf("Time spent in read(): min=%f, max=%f, avg=%f\n", global_min, global_max, global_sum / size);
   }
 
   if (rank == 0)
   {
-    printf("-----SUMMARY------\n");
-    printf("Times: [%f", times[0]);
-    double sum = times[0];
-    for (int i = 1; i < 10; i++)
-    {
-      printf(", %f", times[i]);
-      sum += times[i];
-    }
-    printf("]\n");
-
-    printf("Average total time: %f ms\n", sum / 10);
+    printf("-----SUMMARY DATA------\n");
+    printf("%d %d %f\n", size, atoi(argv[1]), time / 1000);
+    printf("-----END SUMMARY------\n");
   }
 
   MPI_Finalize();

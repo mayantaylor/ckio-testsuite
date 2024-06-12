@@ -1,0 +1,52 @@
+
+Running as 256 OS processes: ./main 16384 1024 256 10 /ocean/projects/asc050015p/mtaylor5/testFile9
+charmrun> /usr/bin/setarch x86_64 -R mpirun -np 256 ./main 16384 1024 256 10 /ocean/projects/asc050015p/mtaylor5/testFile9
+Charm++> Running on MPI library: Open MPI v4.1.1, package: Open MPI wozniak@r002.ib.bridges2.psc.edu Distribution, ident: 4.1.1, repo rev: v4.1.1, Apr 24, 2021 (MPI standard: 3.1)
+Charm++> Level of thread support used: MPI_THREAD_SINGLE (desired: MPI_THREAD_SINGLE)
+Charm++> Running in non-SMP mode: 256 processes (PEs)
+Converse/Charm++ Commit ID: v7.1.0-devel-399-g57e20b4b0
+Charm++ built without optimization.
+Do not use for performance benchmarking (build with --with-production to do so).
+Charm++ built with internal error checking enabled.
+Do not use for performance benchmarking (build without --enable-error-checking to do so).
+Isomalloc> Synchronized global address space.
+CharmLB> Load balancer assumes all CPUs are same.
+Charm++> Running on 8 hosts (2 sockets x 64 cores x 1 PUs = 128-way SMP)
+Charm++> cpu topology info is gathered in 0.009 seconds.
+CharmLB> Load balancing instrumentation for communication is off.
+-------ROUND 0-------
+Starting timers and opening file: /ocean/projects/asc050015p/mtaylor5/testFile90
+Total time = 1.635718 sec
+-------ROUND 1-------
+Starting timers and opening file: /ocean/projects/asc050015p/mtaylor5/testFile91
+Total time = 1.018189 sec
+-------ROUND 2-------
+Starting timers and opening file: /ocean/projects/asc050015p/mtaylor5/testFile92
+Total time = 0.548424 sec
+-------ROUND 3-------
+Starting timers and opening file: /ocean/projects/asc050015p/mtaylor5/testFile93
+Total time = 0.620206 sec
+-------ROUND 4-------
+Starting timers and opening file: /ocean/projects/asc050015p/mtaylor5/testFile94
+Total time = 0.644945 sec
+-------ROUND 5-------
+Starting timers and opening file: /ocean/projects/asc050015p/mtaylor5/testFile95
+Total time = 0.910074 sec
+-------ROUND 6-------
+Starting timers and opening file: /ocean/projects/asc050015p/mtaylor5/testFile96
+Total time = 0.641258 sec
+-------ROUND 7-------
+Starting timers and opening file: /ocean/projects/asc050015p/mtaylor5/testFile97
+Total time = 1.454315 sec
+-------ROUND 8-------
+Starting timers and opening file: /ocean/projects/asc050015p/mtaylor5/testFile98
+Total time = 0.658321 sec
+-------ROUND 9-------
+Starting timers and opening file: /ocean/projects/asc050015p/mtaylor5/testFile99
+Total time = 0.930574 sec
+-----SUMMARY------
+Times: [1.635718, 1.018189, 0.548424, 0.620206, 0.644945, 0.910074, 0.641258, 1.454315, 0.658321, 0.930574]
+-----SUMMARY DATA------
+16384 1.635718 1.018189 0.548424 0.620206 0.644945 0.910074 0.641258 1.454315 0.658321 0.930574
+-----END SUMMARY------
+[Partition 0][Node 0] End of program
