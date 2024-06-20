@@ -15,7 +15,6 @@ void test_read(CkReductionMsg* impl_msg);
 void closed(CkReductionMsg* impl_msg);
 void sessionClosed(CkReductionMsg* impl_msg);
 void iterDone();
-void bgDone(double time);
 };
  */
  class Main;
@@ -141,6 +140,19 @@ class CkIndex_Main:public CkIndex_Chare{
 
     
     static int test_read(CkReductionMsg* impl_msg) { return idx_test_read_CkReductionMsg(); }
+    // Entry point registration at startup
+    
+    static int reg_redn_wrapper_test_read_CkReductionMsg();
+    // Entry point index lookup
+    
+    inline static int idx_redn_wrapper_test_read_CkReductionMsg() {
+      static int epidx = reg_redn_wrapper_test_read_CkReductionMsg();
+      return epidx;
+    }
+    
+    static int redn_wrapper_test_read(CkReductionMsg* impl_msg) { return idx_redn_wrapper_test_read_CkReductionMsg(); }
+    
+    static void _call_redn_wrapper_test_read_CkReductionMsg(void* impl_msg, void* impl_obj_void);
     
     static void _call_test_read_CkReductionMsg(void* impl_msg, void* impl_obj);
     
@@ -217,47 +229,6 @@ class CkIndex_Main:public CkIndex_Chare{
     static void _call_iterDone_void(void* impl_msg, void* impl_obj);
     
     static void _call_sdag_iterDone_void(void* impl_msg, void* impl_obj);
-    /* DECLS: void bgDone(double time);
-     */
-    // Entry point registration at startup
-    
-    static int reg_bgDone_marshall9();
-    // Entry point index lookup
-    
-    inline static int idx_bgDone_marshall9() {
-      static int epidx = reg_bgDone_marshall9();
-      return epidx;
-    }
-
-    
-    inline static int idx_bgDone(void (Main::*)(double time) ) {
-      return idx_bgDone_marshall9();
-    }
-
-
-    
-    static int bgDone(double time) { return idx_bgDone_marshall9(); }
-    // Entry point registration at startup
-    
-    static int reg_redn_wrapper_bgDone_marshall9();
-    // Entry point index lookup
-    
-    inline static int idx_redn_wrapper_bgDone_marshall9() {
-      static int epidx = reg_redn_wrapper_bgDone_marshall9();
-      return epidx;
-    }
-    
-    static int redn_wrapper_bgDone(CkReductionMsg* impl_msg) { return idx_redn_wrapper_bgDone_marshall9(); }
-    
-    static void _call_redn_wrapper_bgDone_marshall9(void* impl_msg, void* impl_obj_void);
-    
-    static void _call_bgDone_marshall9(void* impl_msg, void* impl_obj);
-    
-    static void _call_sdag_bgDone_marshall9(void* impl_msg, void* impl_obj);
-    
-    static int _callmarshall_bgDone_marshall9(char* impl_buf, void* impl_obj_void);
-    
-    static void _marshallmessagepup_bgDone_marshall9(PUP::er &p,void *msg);
 };
 /* --------------- element proxy ------------------ */
 class CProxy_Main:public CProxy_Chare{
@@ -339,11 +310,6 @@ class CProxy_Main:public CProxy_Chare{
     
     void iterDone(const CkEntryOptions *impl_e_opts=NULL);
 
-/* DECLS: void bgDone(double time);
- */
-    
-    void bgDone(double time, const CkEntryOptions *impl_e_opts=NULL);
-
 };
 #define Main_SDAG_CODE                                                         \
 public:                                                                        \
@@ -369,17 +335,12 @@ private:                                                                       \
   SDAG::Continuation* _when_4();                                               \
   void _when_4_end(CkReductionMsg* gen0);                                      \
   void _serial_5(CkReductionMsg* gen0);                                        \
-  SDAG::Continuation* _when_5();                                               \
-  void _when_5_end(Closure_Main::bgDone_9_closure* gen0);                      \
-  void _serial_6(Closure_Main::bgDone_9_closure* gen0);                        \
 public:                                                                        \
   void ready(Ck::IO::FileReadyMsg* m_msg);                                     \
   void start_read(Ck::IO::SessionReadyMsg* m_msg);                             \
   void test_read(CkReductionMsg* m_msg);                                       \
   void sessionClosed(CkReductionMsg* m_msg);                                   \
   void closed(CkReductionMsg* m_msg);                                          \
-  void bgDone(Closure_Main::bgDone_9_closure* genClosure);                     \
-  void bgDone(double time);                                                    \
 public:                                                                        \
   SDAG::dep_ptr __dep;                                                         \
   void _sdag_init();                                                           \
@@ -400,13 +361,11 @@ public:                                                                        \
   static int _sdag_reg_Main_serial_4();                                        \
   static int _sdag_idx_Main_serial_5();                                        \
   static int _sdag_reg_Main_serial_5();                                        \
-  static int _sdag_idx_Main_serial_6();                                        \
-  static int _sdag_reg_Main_serial_6();                                        \
 
 typedef CBaseT1<Chare, CProxy_Main>CBase_Main;
 
 /* DECLS: array Test: ArrayElement{
-Test(const Ck::IO::Session &token, const size_t &bytesToRead);
+Test(const Ck::IO::Session &token, const size_t &bytesToRead, int readType);
 void readDone(Ck::IO::ReadCompleteMsg* impl_msg);
 Test(CkMigrateMessage* impl_msg);
 };
@@ -427,7 +386,7 @@ class CkIndex_Test:public CkIndex_ArrayElement{
 
     static int __idx;
     static void __register(const char *s, size_t size);
-    /* DECLS: Test(const Ck::IO::Session &token, const size_t &bytesToRead);
+    /* DECLS: Test(const Ck::IO::Session &token, const size_t &bytesToRead, int readType);
      */
     // Entry point registration at startup
     
@@ -440,7 +399,7 @@ class CkIndex_Test:public CkIndex_ArrayElement{
     }
 
     
-    static int ckNew(const Ck::IO::Session &token, const size_t &bytesToRead) { return idx_Test_marshall1(); }
+    static int ckNew(const Ck::IO::Session &token, const size_t &bytesToRead, int readType) { return idx_Test_marshall1(); }
     
     static void _call_Test_marshall1(void* impl_msg, void* impl_obj);
     
@@ -587,10 +546,10 @@ class CkIndex_Test:public CkIndex_ArrayElement{
         :CProxyElement_ArrayElement(aid,idx)
     {
 }
-/* DECLS: Test(const Ck::IO::Session &token, const size_t &bytesToRead);
+/* DECLS: Test(const Ck::IO::Session &token, const size_t &bytesToRead, int readType);
  */
     
-    void insert(const Ck::IO::Session &token, const size_t &bytesToRead, int onPE=-1, const CkEntryOptions *impl_e_opts=NULL);
+    void insert(const Ck::IO::Session &token, const size_t &bytesToRead, int readType, int onPE=-1, const CkEntryOptions *impl_e_opts=NULL);
 /* DECLS: void readDone(Ck::IO::ReadCompleteMsg* impl_msg);
  */
     
@@ -680,13 +639,13 @@ class CkIndex_Test:public CkIndex_ArrayElement{
         :CProxy_ArrayElement(aid,CK_DELCTOR_ARGS) {}
     CProxy_Test(const CkArrayID &aid) 
         :CProxy_ArrayElement(aid) {}
-/* DECLS: Test(const Ck::IO::Session &token, const size_t &bytesToRead);
+/* DECLS: Test(const Ck::IO::Session &token, const size_t &bytesToRead, int readType);
  */
     
-    static CkArrayID ckNew(const Ck::IO::Session &token, const size_t &bytesToRead, const CkArrayOptions &opts = CkArrayOptions(), const CkEntryOptions *impl_e_opts=NULL);
-    static void      ckNew(const Ck::IO::Session &token, const size_t &bytesToRead, const CkArrayOptions &opts, CkCallback _ck_array_creation_cb, const CkEntryOptions *impl_e_opts=NULL);
-    static CkArrayID ckNew(const Ck::IO::Session &token, const size_t &bytesToRead, const int s1, const CkEntryOptions *impl_e_opts=NULL);
-    static void ckNew(const Ck::IO::Session &token, const size_t &bytesToRead, const int s1, CkCallback _ck_array_creation_cb, const CkEntryOptions *impl_e_opts=NULL);
+    static CkArrayID ckNew(const Ck::IO::Session &token, const size_t &bytesToRead, int readType, const CkArrayOptions &opts = CkArrayOptions(), const CkEntryOptions *impl_e_opts=NULL);
+    static void      ckNew(const Ck::IO::Session &token, const size_t &bytesToRead, int readType, const CkArrayOptions &opts, CkCallback _ck_array_creation_cb, const CkEntryOptions *impl_e_opts=NULL);
+    static CkArrayID ckNew(const Ck::IO::Session &token, const size_t &bytesToRead, int readType, const int s1, const CkEntryOptions *impl_e_opts=NULL);
+    static void ckNew(const Ck::IO::Session &token, const size_t &bytesToRead, int readType, const int s1, CkCallback _ck_array_creation_cb, const CkEntryOptions *impl_e_opts=NULL);
 
 /* DECLS: void readDone(Ck::IO::ReadCompleteMsg* impl_msg);
  */
@@ -849,7 +808,7 @@ class CkIndex_Test:public CkIndex_ArrayElement{
     static void contribute(int dataSize,void *data,CkReduction::reducerType type, CkSectionInfo &sid, const CkCallback &cb, int userData=-1, int fragSize=-1);
     template <typename T>
     static void contribute(std::vector<T> &data, CkReduction::reducerType type, CkSectionInfo &sid, const CkCallback &cb, int userData=-1, int fragSize=-1);
-/* DECLS: Test(const Ck::IO::Session &token, const size_t &bytesToRead);
+/* DECLS: Test(const Ck::IO::Session &token, const size_t &bytesToRead, int readType);
  */
     
 
@@ -864,347 +823,6 @@ class CkIndex_Test:public CkIndex_ArrayElement{
 };
 #define Test_SDAG_CODE 
 typedef CBaseT1<ArrayElementT<CkIndex1D>, CProxy_Test>CBase_Test;
-
-/* DECLS: group Background: IrrGroup{
-Background();
-threaded void dummyBackgroundWork();
-void setWorkDone();
-};
- */
- class Background;
- class CkIndex_Background;
- class CProxy_Background;
- class CProxyElement_Background;
- class CProxySection_Background;
-/* --------------- index object ------------------ */
-class CkIndex_Background:public CkIndex_IrrGroup{
-  public:
-    typedef Background local_t;
-    typedef CkIndex_Background index_t;
-    typedef CProxy_Background proxy_t;
-    typedef CProxyElement_Background element_t;
-    typedef CProxySection_Background section_t;
-
-    static int __idx;
-    static void __register(const char *s, size_t size);
-    /* DECLS: Background();
-     */
-    // Entry point registration at startup
-    
-    static int reg_Background_void();
-    // Entry point index lookup
-    
-    inline static int idx_Background_void() {
-      static int epidx = reg_Background_void();
-      return epidx;
-    }
-
-    
-    static int ckNew() { return idx_Background_void(); }
-    
-    static void _call_Background_void(void* impl_msg, void* impl_obj);
-    
-    static void _call_sdag_Background_void(void* impl_msg, void* impl_obj);
-    /* DECLS: threaded void dummyBackgroundWork();
-     */
-    // Entry point registration at startup
-    
-    static int reg_dummyBackgroundWork_void();
-    // Entry point index lookup
-    
-    inline static int idx_dummyBackgroundWork_void() {
-      static int epidx = reg_dummyBackgroundWork_void();
-      return epidx;
-    }
-
-    
-    inline static int idx_dummyBackgroundWork(void (Background::*)() ) {
-      return idx_dummyBackgroundWork_void();
-    }
-
-
-    
-    static int dummyBackgroundWork() { return idx_dummyBackgroundWork_void(); }
-    
-    static void _call_dummyBackgroundWork_void(void* impl_msg, void* impl_obj);
-    
-    static void _call_sdag_dummyBackgroundWork_void(void* impl_msg, void* impl_obj);
-    
-    static void _callthr_dummyBackgroundWork_void(CkThrCallArg *);
-    /* DECLS: void setWorkDone();
-     */
-    // Entry point registration at startup
-    
-    static int reg_setWorkDone_void();
-    // Entry point index lookup
-    
-    inline static int idx_setWorkDone_void() {
-      static int epidx = reg_setWorkDone_void();
-      return epidx;
-    }
-
-    
-    inline static int idx_setWorkDone(void (Background::*)() ) {
-      return idx_setWorkDone_void();
-    }
-
-
-    
-    static int setWorkDone() { return idx_setWorkDone_void(); }
-    
-    static void _call_setWorkDone_void(void* impl_msg, void* impl_obj);
-    
-    static void _call_sdag_setWorkDone_void(void* impl_msg, void* impl_obj);
-};
-/* --------------- element proxy ------------------ */
-class CProxyElement_Background: public CProxyElement_IrrGroup{
-  public:
-    typedef Background local_t;
-    typedef CkIndex_Background index_t;
-    typedef CProxy_Background proxy_t;
-    typedef CProxyElement_Background element_t;
-    typedef CProxySection_Background section_t;
-
-
-    /* TRAM aggregators */
-
-    CProxyElement_Background(void) {
-    }
-    CProxyElement_Background(const IrrGroup *g) : CProxyElement_IrrGroup(g){
-    }
-    CProxyElement_Background(CkGroupID _gid,int _onPE,CK_DELCTOR_PARAM) : CProxyElement_IrrGroup(_gid,_onPE,CK_DELCTOR_ARGS){
-    }
-    CProxyElement_Background(CkGroupID _gid,int _onPE) : CProxyElement_IrrGroup(_gid,_onPE){
-    }
-
-    int ckIsDelegated(void) const
-    { return CProxyElement_IrrGroup::ckIsDelegated(); }
-    inline CkDelegateMgr *ckDelegatedTo(void) const
-    { return CProxyElement_IrrGroup::ckDelegatedTo(); }
-    inline CkDelegateData *ckDelegatedPtr(void) const
-    { return CProxyElement_IrrGroup::ckDelegatedPtr(); }
-    CkGroupID ckDelegatedIdx(void) const
-    { return CProxyElement_IrrGroup::ckDelegatedIdx(); }
-inline void ckCheck(void) const {CProxyElement_IrrGroup::ckCheck();}
-CkChareID ckGetChareID(void) const
-   {return CProxyElement_IrrGroup::ckGetChareID();}
-CkGroupID ckGetGroupID(void) const
-   {return CProxyElement_IrrGroup::ckGetGroupID();}
-operator CkGroupID () const { return ckGetGroupID(); }
-
-    inline void setReductionClient(CkReductionClientFn fn,void *param=NULL) const
-    { CProxyElement_IrrGroup::setReductionClient(fn,param); }
-    inline void ckSetReductionClient(CkReductionClientFn fn,void *param=NULL) const
-    { CProxyElement_IrrGroup::ckSetReductionClient(fn,param); }
-    inline void ckSetReductionClient(CkCallback *cb) const
-    { CProxyElement_IrrGroup::ckSetReductionClient(cb); }
-int ckGetGroupPe(void) const
-{return CProxyElement_IrrGroup::ckGetGroupPe();}
-
-    void ckDelegate(CkDelegateMgr *dTo,CkDelegateData *dPtr=NULL)
-    {       CProxyElement_IrrGroup::ckDelegate(dTo,dPtr); }
-    void ckUndelegate(void)
-    {       CProxyElement_IrrGroup::ckUndelegate(); }
-    void pup(PUP::er &p)
-    {       CProxyElement_IrrGroup::pup(p);
-    }
-    void ckSetGroupID(CkGroupID g) {
-      CProxyElement_IrrGroup::ckSetGroupID(g);
-    }
-    Background* ckLocalBranch(void) const {
-      return ckLocalBranch(ckGetGroupID());
-    }
-    static Background* ckLocalBranch(CkGroupID gID) {
-      return (Background*)CkLocalBranch(gID);
-    }
-/* DECLS: Background();
- */
-    
-
-/* DECLS: threaded void dummyBackgroundWork();
- */
-    
-    void dummyBackgroundWork(const CkEntryOptions *impl_e_opts=NULL);
-
-/* DECLS: void setWorkDone();
- */
-    
-    void setWorkDone(const CkEntryOptions *impl_e_opts=NULL);
-
-};
-/* ---------------- collective proxy -------------- */
-class CProxy_Background: public CProxy_IrrGroup{
-  public:
-    typedef Background local_t;
-    typedef CkIndex_Background index_t;
-    typedef CProxy_Background proxy_t;
-    typedef CProxyElement_Background element_t;
-    typedef CProxySection_Background section_t;
-
-    CProxy_Background(void) {
-    }
-    CProxy_Background(const IrrGroup *g) : CProxy_IrrGroup(g){
-    }
-    CProxy_Background(CkGroupID _gid,CK_DELCTOR_PARAM) : CProxy_IrrGroup(_gid,CK_DELCTOR_ARGS){  }
-    CProxy_Background(CkGroupID _gid) : CProxy_IrrGroup(_gid){  }
-    CProxyElement_Background operator[](int onPE) const
-      {return CProxyElement_Background(ckGetGroupID(),onPE,CK_DELCTOR_CALL);}
-
-    int ckIsDelegated(void) const
-    { return CProxy_IrrGroup::ckIsDelegated(); }
-    inline CkDelegateMgr *ckDelegatedTo(void) const
-    { return CProxy_IrrGroup::ckDelegatedTo(); }
-    inline CkDelegateData *ckDelegatedPtr(void) const
-    { return CProxy_IrrGroup::ckDelegatedPtr(); }
-    CkGroupID ckDelegatedIdx(void) const
-    { return CProxy_IrrGroup::ckDelegatedIdx(); }
-inline void ckCheck(void) const {CProxy_IrrGroup::ckCheck();}
-CkChareID ckGetChareID(void) const
-   {return CProxy_IrrGroup::ckGetChareID();}
-CkGroupID ckGetGroupID(void) const
-   {return CProxy_IrrGroup::ckGetGroupID();}
-operator CkGroupID () const { return ckGetGroupID(); }
-
-    inline void setReductionClient(CkReductionClientFn fn,void *param=NULL) const
-    { CProxy_IrrGroup::setReductionClient(fn,param); }
-    inline void ckSetReductionClient(CkReductionClientFn fn,void *param=NULL) const
-    { CProxy_IrrGroup::ckSetReductionClient(fn,param); }
-    inline void ckSetReductionClient(CkCallback *cb) const
-    { CProxy_IrrGroup::ckSetReductionClient(cb); }
-
-    void ckDelegate(CkDelegateMgr *dTo,CkDelegateData *dPtr=NULL)
-    {       CProxy_IrrGroup::ckDelegate(dTo,dPtr); }
-    void ckUndelegate(void)
-    {       CProxy_IrrGroup::ckUndelegate(); }
-    void pup(PUP::er &p)
-    {       CProxy_IrrGroup::pup(p);
-    }
-    void ckSetGroupID(CkGroupID g) {
-      CProxy_IrrGroup::ckSetGroupID(g);
-    }
-    Background* ckLocalBranch(void) const {
-      return ckLocalBranch(ckGetGroupID());
-    }
-    static Background* ckLocalBranch(CkGroupID gID) {
-      return (Background*)CkLocalBranch(gID);
-    }
-/* DECLS: Background();
- */
-    
-    static CkGroupID ckNew(const CkEntryOptions *impl_e_opts=NULL);
-
-/* DECLS: threaded void dummyBackgroundWork();
- */
-    
-    void dummyBackgroundWork(const CkEntryOptions *impl_e_opts=NULL);
-    
-    void dummyBackgroundWork(int npes, int *pes, const CkEntryOptions *impl_e_opts=NULL);
-    
-    void dummyBackgroundWork(CmiGroup &grp, const CkEntryOptions *impl_e_opts=NULL);
-
-/* DECLS: void setWorkDone();
- */
-    
-    void setWorkDone(const CkEntryOptions *impl_e_opts=NULL);
-    
-    void setWorkDone(int npes, int *pes, const CkEntryOptions *impl_e_opts=NULL);
-    
-    void setWorkDone(CmiGroup &grp, const CkEntryOptions *impl_e_opts=NULL);
-
-};
-/* ---------------- section proxy -------------- */
-class CProxySection_Background: public CProxySection_IrrGroup{
-  public:
-    typedef Background local_t;
-    typedef CkIndex_Background index_t;
-    typedef CProxy_Background proxy_t;
-    typedef CProxyElement_Background element_t;
-    typedef CProxySection_Background section_t;
-
-    CProxySection_Background(void) {
-    }
-    CProxySection_Background(const IrrGroup *g) : CProxySection_IrrGroup(g){
-    }
-    CProxySection_Background(const CkGroupID &_gid,const int *_pelist,int _npes, CK_DELCTOR_PARAM) : CProxySection_IrrGroup(_gid,_pelist,_npes,CK_DELCTOR_ARGS){  }
-    CProxySection_Background(const CkGroupID &_gid,const int *_pelist,int _npes, int factor = USE_DEFAULT_BRANCH_FACTOR) : CProxySection_IrrGroup(_gid,_pelist,_npes,factor){  }
-    CProxySection_Background(int n,const CkGroupID *_gid, int const * const *_pelist,const int *_npes, int factor = USE_DEFAULT_BRANCH_FACTOR) : CProxySection_IrrGroup(n,_gid,_pelist,_npes,factor){  }
-    CProxySection_Background(int n,const CkGroupID *_gid, int const * const *_pelist,const int *_npes, CK_DELCTOR_PARAM) : CProxySection_IrrGroup(n,_gid,_pelist,_npes,CK_DELCTOR_ARGS){  }
-
-    int ckIsDelegated(void) const
-    { return CProxySection_IrrGroup::ckIsDelegated(); }
-    inline CkDelegateMgr *ckDelegatedTo(void) const
-    { return CProxySection_IrrGroup::ckDelegatedTo(); }
-    inline CkDelegateData *ckDelegatedPtr(void) const
-    { return CProxySection_IrrGroup::ckDelegatedPtr(); }
-    CkGroupID ckDelegatedIdx(void) const
-    { return CProxySection_IrrGroup::ckDelegatedIdx(); }
-inline void ckCheck(void) const {CProxySection_IrrGroup::ckCheck();}
-CkChareID ckGetChareID(void) const
-   {return CProxySection_IrrGroup::ckGetChareID();}
-CkGroupID ckGetGroupID(void) const
-   {return CProxySection_IrrGroup::ckGetGroupID();}
-operator CkGroupID () const { return ckGetGroupID(); }
-
-    inline void setReductionClient(CkReductionClientFn fn,void *param=NULL) const
-    { CProxySection_IrrGroup::setReductionClient(fn,param); }
-    inline void ckSetReductionClient(CkReductionClientFn fn,void *param=NULL) const
-    { CProxySection_IrrGroup::ckSetReductionClient(fn,param); }
-    inline void ckSetReductionClient(CkCallback *cb) const
-    { CProxySection_IrrGroup::ckSetReductionClient(cb); }
-inline int ckGetNumSections() const
-{ return CProxySection_IrrGroup::ckGetNumSections(); }
-inline CkSectionInfo &ckGetSectionInfo()
-{ return CProxySection_IrrGroup::ckGetSectionInfo(); }
-inline CkSectionID *ckGetSectionIDs()
-{ return CProxySection_IrrGroup::ckGetSectionIDs(); }
-inline CkSectionID &ckGetSectionID()
-{ return CProxySection_IrrGroup::ckGetSectionID(); }
-inline CkSectionID &ckGetSectionID(int i)
-{ return CProxySection_IrrGroup::ckGetSectionID(i); }
-inline CkGroupID ckGetGroupIDn(int i) const
-{ return CProxySection_IrrGroup::ckGetGroupIDn(i); }
-inline const int *ckGetElements() const
-{ return CProxySection_IrrGroup::ckGetElements(); }
-inline const int *ckGetElements(int i) const
-{ return CProxySection_IrrGroup::ckGetElements(i); }
-inline int ckGetNumElements() const
-{ return CProxySection_IrrGroup::ckGetNumElements(); } 
-inline int ckGetNumElements(int i) const
-{ return CProxySection_IrrGroup::ckGetNumElements(i); }
-
-    void ckDelegate(CkDelegateMgr *dTo,CkDelegateData *dPtr=NULL)
-    {       CProxySection_IrrGroup::ckDelegate(dTo,dPtr); }
-    void ckUndelegate(void)
-    {       CProxySection_IrrGroup::ckUndelegate(); }
-    void pup(PUP::er &p)
-    {       CProxySection_IrrGroup::pup(p);
-    }
-    void ckSetGroupID(CkGroupID g) {
-      CProxySection_IrrGroup::ckSetGroupID(g);
-    }
-    Background* ckLocalBranch(void) const {
-      return ckLocalBranch(ckGetGroupID());
-    }
-    static Background* ckLocalBranch(CkGroupID gID) {
-      return (Background*)CkLocalBranch(gID);
-    }
-/* DECLS: Background();
- */
-    
-
-/* DECLS: threaded void dummyBackgroundWork();
- */
-    
-    void dummyBackgroundWork(const CkEntryOptions *impl_e_opts=NULL);
-
-/* DECLS: void setWorkDone();
- */
-    
-    void setWorkDone(const CkEntryOptions *impl_e_opts=NULL);
-
-};
-#define Background_SDAG_CODE 
-typedef CBaseT1<Group, CProxy_Background>CBase_Background;
 
 
 /* ---------------- method closures -------------- */
@@ -1222,9 +840,6 @@ class Closure_Main {
 
     struct iterDone_8_closure;
 
-
-    struct bgDone_9_closure;
-
 };
 
 /* ---------------- method closures -------------- */
@@ -1232,18 +847,6 @@ class Closure_Test {
   public:
 
 
-
-};
-
-/* ---------------- method closures -------------- */
-class Closure_Background {
-  public:
-
-
-    struct dummyBackgroundWork_2_closure;
-
-
-    struct setWorkDone_3_closure;
 
 };
 
