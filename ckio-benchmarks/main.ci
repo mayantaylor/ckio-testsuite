@@ -27,6 +27,7 @@ mainmodule iotest
       };
       when ready(Ck::IO::FileReadyMsg * m) serial
       {
+        time1 = CkWallTimer() - start_time;
         f = m->file;
 
         if (doBG)
@@ -41,6 +42,7 @@ mainmodule iotest
       }
       when start_read(Ck::IO::SessionReadyMsg * m) serial
       {
+        time2 = CkWallTimer() - time1;
         size_t sizeToRead = fileSize / n; // only works if fileSize is a multiple of n
         session = m->session;
         testers = CProxy_Test::ckNew(m->session, sizeToRead, n);
@@ -50,8 +52,7 @@ mainmodule iotest
 
       when test_read(CkReductionMsg * m) serial
       {
-
-        totalTime = CkWallTimer() - start_time;
+        time3 = CkWallTimer() - time2;
         CkCallback cb(CkIndex_Main::sessionClosed(0), thisProxy);
         Ck::IO::closeReadSession(session, cb);
 
@@ -66,6 +67,7 @@ mainmodule iotest
       when sessionClosed(CkReductionMsg * m)
           serial
       {
+        time4 = CkWallTimer() - time3;
         CkCallback closedCb(CkIndex_Main::closed(0), thisProxy);
 
         Ck::IO::close(f, closedCb);
@@ -75,6 +77,7 @@ mainmodule iotest
       when closed(CkReductionMsg * m)
           serial
       {
+        time5 = CkWallTimer() - time4;
         delete m;
 
         if (!doBG)
@@ -86,10 +89,11 @@ mainmodule iotest
       when bgDone(double time)
           serial
       {
-        bgTime = time;
+        totalTime = CkWallTimer() - start_time;
+        bgTime = time / CkNumPes();
 
         CkPrintf("-----SUMMARY DATA------\n");
-        CkPrintf("%d %d %d %llu %f %f\n", n, numBufChares, CkNumPes(), fileSize / (1024 * 1024), bgTime, totalTime);
+        CkPrintf("%d %d %d %lu %f %f %f %f %f %f %f\n", n, numBufChares, CkNumPes(), fileSize / (1024 * 1024), bgTime, totalTime, time1, time2, time3, time4, time5);
         CkPrintf("-----END SUMMARY------\n");
         CkExit();
       }

@@ -26,6 +26,12 @@ class Main : public CBase_Main
 
   std::string filename;
 
+  double time1;
+  double time2;
+  double time3;
+  double time4;
+  double time5;
+
 public:
   Main(CkArgMsg *m)
   {
@@ -69,7 +75,9 @@ public:
   {
     int dummyCounter = 10;
     double totalTime = 0;
-    // do some dummy work
+
+    // do some dummy work for 1000 iterations
+    int iter = 0;
     while (!workDone)
     {
       double start = CkWallTimer();
