@@ -1,4 +1,4 @@
-#include "iotest.decl.h"
+#include "main.decl.h"
 #include <vector>
 #include <time.h>
 #include <assert.h>
@@ -24,22 +24,24 @@ class Main : public CBase_Main
   int numBufChares;
   int doBG;
 
+  char *output_file;
+
   std::string filename;
 
 public:
   Main(CkArgMsg *m)
   {
-    numBufChares = atoi(m->argv[1]);                   // arg 1 = number of buffer chares
-    fileSize = (size_t)atoi(m->argv[2]) * 1024 * 1024; // file size = arg 2
-    n = atoi(m->argv[3]);                              // arg 3 = number of readers
-    std::string fn(m->argv[4]);                        // arg 4 = filename
+    n = atoi(m->argv[1]);                              // arg 1 = number of readers
+    numBufChares = atoi(m->argv[2]);                   // arg 2 = number of buffer chares
+    fileSize = (size_t)atoi(m->argv[3]) * 1024 * 1024; // arg 3 = file size in MB
+    std::string fn(m->argv[4]);                        // arg 4 = input filename
     doBG = atoi(m->argv[5]);                           // arg 5 = boolean to run background work
-
+    output_file = (m->argv[6]);                        // arg 6 = output file name
+    
     filename = fn;
 
-    CkPrintf("done parsing args, starting prog\n");
     mainproxy = thisProxy;
-    thisProxy.run(); // open files
+    thisProxy.run();
     delete m;
   }
 
@@ -122,4 +124,4 @@ public:
   }
 };
 
-#include "iotest.def.h"
+#include "main.def.h"

@@ -1,5 +1,5 @@
 
-mainmodule iotest
+mainmodule main
 {
   include "ckio.h";
 
@@ -88,10 +88,31 @@ mainmodule iotest
       {
         bgTime = time;
 
-        CkPrintf("-----SUMMARY DATA------\n");
-        CkPrintf("%d %d %d %llu %f %f\n", n, numBufChares, CkNumPes(), fileSize / (1024 * 1024), bgTime, totalTime);
-        CkPrintf("-----END SUMMARY------\n");
-        CkExit();
+
+	// write to output file
+	int fd;
+	int saved_stdout = dup(1);
+	
+	fd = open(output_file, O_WRONLY | O_APPEND, 0644);
+	if (fd == -1) {
+	   CkPrintf("Open output file failed\n");
+	   CkExit();
+	}
+
+	if (dup2(fd,1) == -1) {
+	   CkPrintf("Dup2 failed to send output to outputfile\n");
+	   CkExit();
+	}
+
+        CkPrintf("%d %d %d %llu %f %f\n", n, numBufChares, CkNumPes(), CkNumNodes(), fileSize / (1024 * 1024), bgTime, totalTime);
+
+	close(fd);
+	// restoring stdout
+
+	dup2(saved_stdout, 1);
+	close(saved_stdout);
+	
+	CkExit();
       }
     };
     entry void start_read(Ck::IO::SessionReadyMsg * m);
