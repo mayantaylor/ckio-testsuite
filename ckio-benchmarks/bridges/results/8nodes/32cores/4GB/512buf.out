@@ -1,3 +1,0 @@
-
-Running as 256 OS processes: ./main 512 4096 256 10 /ocean/projects/asc050015p/mtaylor5/testFile4
-charmrun> /usr/bin/setarch x86_64 -R mpirun -np 256 ./main 512 4096 256 10 /ocean/projects/asc050015p/mtaylor5/testFile4
