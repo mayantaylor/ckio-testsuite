@@ -26,7 +26,7 @@ mainmodule reader
 				// Start background work
 				if (bg_on)
 				{
-					bg = CProxy_Background::ckNew();
+					bg = CProxy_Background::ckNew(bg_fixed);
 				}
 				else
 				{
@@ -46,9 +46,31 @@ mainmodule reader
 					all_time = total; // record time in array for final summary
 
 					bg_time = bg_time / CkNumPes();
-					CkPrintf("-----SUMMARY DATA------\n");
-					CkPrintf("%d %d %f %f\n", CkNumPes(), numChares, bg_time, all_time);
-					CkPrintf("-----END SUMMARY------\n");
+
+					// write to output file
+					int fd;
+					int saved_stdout = dup(1);
+
+					fd = open(output_file, O_WRONLY | O_APPEND, 0644);
+					if (fd == -1)
+					{
+						CkPrintf("Open output file failed\n");
+						CkExit();
+					}
+
+					if (dup2(fd, 1) == -1)
+					{
+						CkPrintf("Dup2 failed to send output to outputfile\n");
+						CkExit();
+					}
+
+					CkPrintf("%d %d %d %d %llu %f %f\n", numChares, CkNumPes(), CkNumNodes(), fileSize / (1024 * 1024), bg_time, all_time);
+
+					close(fd);
+					// restoring stdout
+
+					dup2(saved_stdout, 1);
+					close(saved_stdout);
 
 					CkExit();
 				}

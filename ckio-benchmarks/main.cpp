@@ -27,6 +27,7 @@ class Main : public CBase_Main
   char *output_file;
 
   std::string filename;
+  int nnodes;
 
 public:
   Main(CkArgMsg *m)
@@ -36,8 +37,10 @@ public:
     fileSize = (size_t)atoi(m->argv[3]) * 1024 * 1024; // arg 3 = file size in MB
     std::string fn(m->argv[4]);                        // arg 4 = input filename
     doBG = atoi(m->argv[5]);                           // arg 5 = boolean to run background work
-    output_file = (m->argv[6]);                        // arg 6 = output file name
-    
+    nnodes = atoi(m->argv[6]);
+    output_file = (m->argv[7]);                        // arg 7 = output file name
+
+
     filename = fn;
 
     mainproxy = thisProxy;
@@ -72,7 +75,20 @@ public:
     int dummyCounter = 10;
     double totalTime = 0;
     // do some dummy work
-    while (!workDone)
+
+    // while (!workDone)
+    // {
+    //   double start = CkWallTimer();
+    //   // inner loop approx 10 microseconds
+    //   while (CkWallTimer() - start < 1 * 1e-3)
+    //     ;
+    //   totalTime += CkWallTimer() - start;
+    //   CthYield();
+    // }
+
+    // do some dummy work for 500 iterations
+    int iter = 0;
+    while (iter < 500)
     {
       double start = CkWallTimer();
       // inner loop approx 10 microseconds
@@ -80,6 +96,7 @@ public:
         ;
       totalTime += CkWallTimer() - start;
       CthYield();
+      iter++;
     }
 
     CkCallback done(CkReductionTarget(Main, bgDone), mainproxy);

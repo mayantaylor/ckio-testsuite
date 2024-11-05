@@ -27,9 +27,10 @@ int main(int argc, char **argv)
   double time;
   size_t fileSize = 1024 * 1024 * atoi(argv[1]);
 
-  // add i to the end of argv string to create a new file
   char filename[50];
   sprintf(filename, "%s", argv[2]);
+
+  char *output_file = argv[3];
 
   MPI_File fh;
   double all_time = MPI_Wtime();
@@ -82,9 +83,31 @@ int main(int argc, char **argv)
 
   if (rank == 0)
   {
-    printf("-----SUMMARY DATA------\n");
+
+    // write to output file
+    int fd;
+    int saved_stdout = dup(1);
+
+    fd = open(output_file, O_WRONLY | O_APPEND, 0644);
+    if (fd == -1)
+    {
+      printf("Open output file failed\n");
+      return 1;
+    }
+
+    if (dup2(fd, 1) == -1)
+    {
+      printf("Dup2 failed to send output to outputfile\n");
+      return 1;
+    }
+
     printf("%d %d %f\n", size, atoi(argv[1]), time / 1000);
-    printf("-----END SUMMARY------\n");
+
+    close(fd);
+    // restoring stdout
+
+    dup2(saved_stdout, 1);
+    close(saved_stdout);
   }
 
   MPI_Finalize();

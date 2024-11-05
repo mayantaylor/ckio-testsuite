@@ -15,6 +15,8 @@
 /*readonly*/ size_t allocFloor; // size of chare allocation (floor)
 /*readonly*/ CProxy_Main mainProxy;
 /*readonly*/ int bg_on;
+/*readonly*/ char *output_file;
+/*readonly*/ int bg_fixed;
 
 class Main : public CBase_Main
 {
@@ -29,19 +31,20 @@ class Main : public CBase_Main
 public:
   Main(CkArgMsg *msg)
   {
-    if (msg->argc != 5)
+    if (msg->argc != 6)
     {
-      CkPrintf("<Main> %s: expecting four arguments:\n\t<N> number of chares\n\t<K> input file size (GB)\t<F> filename \t<B> background work boolean\n",
-               msg->argv[0]);
+      CkPrintf("<Main> %s: expecting five arguments\n", msg->argv[0]);
       CkExit();
     }
 
-    numChares = atoi(msg->argv[1]);
-    fileSize = (size_t)atoi(msg->argv[2]) * 1024 * 1024;
-    std::string fn(msg->argv[3]);
-    filename = fn;
+    numChares = atoi(msg->argv[1]);                      // arg 1 = number of readers
+    fileSize = (size_t)atoi(msg->argv[2]) * 1024 * 1024; // arg 2 = file size in MB
+    std::string fn(msg->argv[3]);                        // arg 3 = input filename
+    bg_on = atoi(msg->argv[4]);                          // arg 4 = boolean to run background work
+    output_file = (msg->argv[5]);                        // arg 5 = output file name
+    bg_fixed = atoi(msg->argv[6]);                       // arg 6 = fixed amount of bg work
 
-    bg_on = atoi(msg->argv[4]);
+    filename = fn;
 
     allocFloor = (size_t)(fileSize / (double)numChares);
     mainProxy = thisProxy;
@@ -133,32 +136,35 @@ private:
   bool workDone;
 
 public:
-  Background()
+  Background(int fixed)
   {
     workDone = false;
-    thisProxy[thisIndex].dummyBackgroundWork();
+    thisProxy[thisIndex].dummyBackgroundWork(fixed);
   }
   void setWorkDone()
   {
     workDone = true;
   }
 
-  void dummyBackgroundWork() // threaded entry method
+  void dummyBackgroundWork(int fixed) // threaded entry method
   {
     int dummyCounter = 10;
     double totalTime = 0;
 
-    // do some dummy work for 1000 iterations
-    int iter = 0;
-    while (iter < 500)
+    if (fixed)
     {
-      double start = CkWallTimer();
-      // inner loop approx 10 microseconds
-      while (CkWallTimer() - start < 1 * 1e-3)
-        ;
-      totalTime += CkWallTimer() - start;
-      CthYield();
-      iter++;
+      // do some dummy work for 1000 iterations
+      int iter = 0;
+      while (iter < 500)
+      {
+        double start = CkWallTimer();
+        // inner loop approx 10 microseconds
+        while (CkWallTimer() - start < 1 * 1e-3)
+          ;
+        totalTime += CkWallTimer() - start;
+        CthYield();
+        iter++;
+      }
     }
 
     CkCallback done(CkReductionTarget(Main, bgDone), mainProxy);

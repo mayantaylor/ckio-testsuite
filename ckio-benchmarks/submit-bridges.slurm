@@ -1,25 +1,28 @@
 #!/bin/bash
-#SBATCH --nodes=1
-#SBATCH --ntasks-per-node=1
+#SBATCH --nodes=16
+#SBATCH --ntasks-per-node=32
 #SBATCH --output=run.out
 #SBATCH --time=00:05:00
 
 module load gcc/13 openmpi/5
 module load cuda/11
 
-input_file=?
-output_file=output.txt
+input_file="/ocean/projects/asc050015p/mtaylor5/16GB.bin"
+output_file=32tpn-16GB.out
 
-nreaders=1
-nbuf=1
-filesize=1024
+touch $output_file
+
+nreaders=$SLURM_NTASKS
+filesize=$((1024 * 16))
 bgwork=0
+nodes=$SLURM_NNODES
 
-# evict input file from cache
-vmtouch -e $input_file
-
-# read
-./charmrun ./main $nreaders $nbuf $filesize $input_file $bgwork $output_file +p$SLURM_NTASKS
-
-# check cache status post read
-vmtouch $input_file
+for bufperpe in 1 2 4; do
+    nbuf=$((bufperpe * $SLURM_NTASKS))
+    for iter in 1 2 3; do
+        # evict input file from cache
+        vmtouch -e $input_file
+        # read
+        ./charmrun ./main $nreaders $nbuf $filesize $input_file $bgwork $nodes $output_file  +p$SLURM_NTASKS
+    done
+done

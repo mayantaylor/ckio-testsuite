@@ -51,7 +51,6 @@ mainmodule main
       when test_read(CkReductionMsg * m) serial
       {
 
-        totalTime = CkWallTimer() - start_time;
         CkCallback cb(CkIndex_Main::sessionClosed(0), thisProxy);
         Ck::IO::closeReadSession(session, cb);
 
@@ -87,7 +86,7 @@ mainmodule main
           serial
       {
         bgTime = time;
-
+        totalTime = CkWallTimer() - start_time;
         // write to output file
         int fd;
         int saved_stdout = dup(1);
@@ -105,7 +104,7 @@ mainmodule main
           CkExit();
         }
 
-        CkPrintf("%d %d %d %d %llu %f %f\n", n, numBufChares, CkNumPes(), CkNumNodes(), fileSize / (1024 * 1024), bgTime, totalTime);
+        CkPrintf("%d %d %d %d %llu %f %f\n", n, numBufChares, CkNumPes(), nnodes, fileSize / (1024 * 1024), bgTime / CkNumPes(), totalTime);
 
         close(fd);
         // restoring stdout
